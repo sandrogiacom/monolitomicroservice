@@ -183,6 +183,6 @@ public class UserRest {
     }
 
     private static String getServerURL() {
-        return "http://172.18.0.6:8080/teste";
+        return "http://PerformanceServer:8080/teste";
     }
 }

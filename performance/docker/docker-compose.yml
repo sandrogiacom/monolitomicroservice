@@ -1,0 +1,85 @@
+version: "3.0"
+
+services:
+  PerformanceMysql:
+    build:
+      context: './mysql'
+    image: performance/mysql:latest
+    container_name: PerformanceMysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'teste'
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceMysql
+
+  PerformanceServer:
+    build:
+      context: './server'
+    image: performance/server:latest
+    container_name: PerformanceServer
+    depends_on:
+      - PerformanceMysql
+    #expose:
+    #  - "8080"
+    #  - "4447"
+    ports:
+      - "8080:8080"
+      - "4447:4447"
+    links:
+    - PerformanceMysql
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceServer
+    volumes:
+      - ../PerformanceServer/target:/opt/performance
+
+  PerformanceRest:
+    build:
+      context: './rest'
+    image: performance/rest:latest
+    container_name: PerformanceRest
+    depends_on:
+      - PerformanceServer
+    #expose:
+    #  - "8100"
+    ports:
+      - "8180:8180"
+    links:
+      - PerformanceServer
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRest
+    volumes:
+      - ../PerformanceRest/target:/opt/performance
+
+  PerformanceRMI:
+    build:
+      context: './rmi'
+    image: performance/rmi:latest
+    container_name: PerformanceRMI
+    depends_on:
+      - PerformanceServer
+    #expose:
+    #  - "8280"
+    ports:
+      - "8280:8280"
+    links:
+      - PerformanceServer
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRMI
+    volumes:
+      - ../PerformanceRMI/target:/opt/performance
+
+networks:
+  dcperformance:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16

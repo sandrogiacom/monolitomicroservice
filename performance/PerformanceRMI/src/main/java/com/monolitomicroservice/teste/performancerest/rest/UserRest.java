@@ -97,7 +97,7 @@ public class UserRest {
                         "false");
         clientProperties.put("remote.connections", "default");
         clientProperties.put("remote.connection.default.port", "8080");
-        clientProperties.put("remote.connection.default.host", "172.18.0.6");
+        clientProperties.put("remote.connection.default.host", "PerformanceServer");
         //clientProperties.put("remote.connection.default.username", "eder");
         //clientProperties.put("remote.connection.default.password", "@eder1");
         clientProperties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS", "false");

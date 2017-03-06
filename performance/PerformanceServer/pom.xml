@@ -47,7 +47,7 @@
                         <!-- swarm.ds.swarm.ds.xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource
                         </swarm.ds.swarm.ds.xa-datasource-class -->
                         <!-- driver-class>com.mysql.jdbc.Driver</driver-class -->
-                        <swarm.ds.connection.url>jdbc:mysql://172.18.0.5/teste</swarm.ds.connection.url>
+                        <swarm.ds.connection.url>jdbc:mysql://PerformanceMysql/teste</swarm.ds.connection.url>
                     </properties>
                 </configuration>
                 <executions>

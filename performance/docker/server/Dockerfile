@@ -3,10 +3,12 @@ FROM java:8-jdk
 MAINTAINER Vanei
 LABEL description="Servidor Performance" version="8"
 
+COPY startup.sh /startup.sh
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /startup.sh
+RUN chmod +x /wait-for-it.sh
+
 EXPOSE 8080
 
 WORKDIR /opt/performance
-#CMD ["java", "-jar", "/opt/performance/PerformanceServer-swarm.jar"]
-CMD ["java", "-jar", "PerformanceServer-swarm.jar"]
-#CMD ["java", "-jar", "PerformanceServer-swarm.jar", "> server.log"]
-#CMD ["java -jar PerformanceServer-swarm.jar > server.log"]
+ENTRYPOINT /startup.sh
