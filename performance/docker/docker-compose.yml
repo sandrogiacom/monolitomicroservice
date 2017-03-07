@@ -21,9 +21,6 @@ services:
     container_name: PerformanceServer
     depends_on:
       - PerformanceMysql
-    #expose:
-    #  - "8080"
-    #  - "4447"
     ports:
       - "8080:8080"
       - "4447:4447"
@@ -43,8 +40,6 @@ services:
     container_name: PerformanceRest
     depends_on:
       - PerformanceServer
-    #expose:
-    #  - "8100"
     ports:
       - "8180:8180"
     links:
@@ -63,8 +58,6 @@ services:
     container_name: PerformanceRMI
     depends_on:
       - PerformanceServer
-    #expose:
-    #  - "8280"
     ports:
       - "8280:8280"
     links:
@@ -82,4 +75,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.18.0.0/16
+        - subnet: 172.19.0.0/16
