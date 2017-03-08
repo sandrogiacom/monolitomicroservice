@@ -21,5 +21,6 @@
         <module>PerformanceServer</module>
         <module>PerformanceRest</module>
         <module>PerformanceRMI</module>
+        <module>PerformanceJMS</module>
     </modules>
 </project>

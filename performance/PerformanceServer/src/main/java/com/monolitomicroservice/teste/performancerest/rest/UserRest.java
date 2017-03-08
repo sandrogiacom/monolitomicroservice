@@ -2,6 +2,7 @@ package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.EJB;
 import javax.ws.rs.FormParam;
@@ -19,6 +20,8 @@ import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 public class UserRest {
     @EJB
     private UserService userService;
+
+    private static Logger log = Logger.getLogger("UserRest");
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,6 +87,8 @@ public class UserRest {
         t = userService.create(t);
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
+        log.info(":::: " + r);
+        log.fine("==== " + r);
 
         return r;
     }

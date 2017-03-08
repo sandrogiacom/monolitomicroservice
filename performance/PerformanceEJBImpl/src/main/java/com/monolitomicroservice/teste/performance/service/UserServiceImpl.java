@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         em.persist(t);
-        log.fine("User created: " + t);
+        log.info("User created: " + t);
         return t;
     }
 
@@ -63,6 +63,9 @@ public class UserServiceImpl implements UserService {
         TypedQuery<TSTUser> q = em.createNamedQuery("TSTUser.findByRange", TSTUser.class);
         q.setFirstResult(start);
         q.setMaxResults(size);
-        return q.getResultList();
+        List<TSTUser> r = q.getResultList();
+        log.info("==== Users found: " + r.size());
+        //log.fine("==== Users found: " + r.size());
+        return r;
     }
 }

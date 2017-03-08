@@ -36,7 +36,8 @@ public class UserRest {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/find")
     public RestResult find(@QueryParam("start") int start, @QueryParam("size") int size,
-            @QueryParam("cached") @DefaultValue("false") String cached) throws Exception {
+            @QueryParam("cached") @DefaultValue("false") String cached,
+            @QueryParam("balanced") @DefaultValue("false") String balanced) throws Exception {
         long ini = System.currentTimeMillis();
 
         if (start < 0)
@@ -44,7 +45,7 @@ public class UserRest {
         if (size <= 0)
             size = 50;
 
-        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
+        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB(balanced.equals("true"));
 
         List<TSTUser> l = service.find(start, size);
 
@@ -65,11 +66,12 @@ public class UserRest {
             @FormParam("lastName") String lastName,
             @FormParam("fullName") String fullName,
             @FormParam("birthDate") Long birthDate,
-            @FormParam("cached") @DefaultValue("false") String cached) throws Exception {
+            @FormParam("cached") @DefaultValue("false") String cached,
+            @FormParam("balanced") @DefaultValue("false") String balanced) throws Exception {
 
         long ini = System.currentTimeMillis();
 
-        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
+        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB(balanced.equals("true"));
 
         TSTUser user = new TSTUser();
         user = service.create(user);
@@ -82,12 +84,12 @@ public class UserRest {
 
     public static UserService locateCachedEJB() throws NamingException {
         if (userService == null) {
-            userService = locateEJB();
+            userService = locateEJB(false);
         }
         return userService;
     }
 
-    public static <T> T locateEJB() throws NamingException {
+    public static <T> T locateEJB(boolean balanced) throws NamingException {
         String jndiName = "ejb:" + appName + "/" + moduleName + "/"
                 + distinctName + "/" + beanName + "!" + interfaceFullName;
 
@@ -97,7 +99,8 @@ public class UserRest {
                         "false");
         clientProperties.put("remote.connections", "default");
         clientProperties.put("remote.connection.default.port", "8080");
-        clientProperties.put("remote.connection.default.host", "PerformanceServer");
+        clientProperties.put("remote.connection.default.host", balanced ? "PerformanceHA" : "PerformanceServer");
+
         //clientProperties.put("remote.connection.default.username", "eder");
         //clientProperties.put("remote.connection.default.password", "@eder1");
         clientProperties.put("remote.connection.default.connect.options.org.xnio.Options.SASL_POLICY_NOANONYMOUS", "false");
