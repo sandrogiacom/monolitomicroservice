@@ -8,7 +8,7 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /startup.sh
 RUN chmod +x /wait-for-it.sh
 
-EXPOSE 8280
+EXPOSE 8080
 
 WORKDIR /opt/performance
 ENTRYPOINT /startup.sh

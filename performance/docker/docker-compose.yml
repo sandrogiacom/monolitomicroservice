@@ -21,8 +21,6 @@ services:
     container_name: PerformanceServer
     depends_on:
       - PerformanceMysql
-    ports:
-      - "8080:8080"
     links:
       - PerformanceMysql
     networks:
@@ -39,8 +37,6 @@ services:
     container_name: PerformanceRest
     depends_on:
       - PerformanceServer
-    ports:
-      - "8180:8180"
     links:
       - PerformanceServer
     networks:
@@ -57,8 +53,6 @@ services:
     container_name: PerformanceRMI
     depends_on:
       - PerformanceServer
-    ports:
-      - "8280:8280"
     links:
       - PerformanceServer
     networks:
@@ -67,6 +61,26 @@ services:
           - PerformanceRMI
     volumes:
       - ../PerformanceRMI/target:/opt/performance
+
+  PerformanceHA:
+    build:
+      context: './haproxy'
+    image: performance/haproxy:latest
+    container_name: PerformanceHA
+    links:
+      - PerformanceRMI
+      - PerformanceServer
+      - PerformanceRest
+    ports:
+      - "8080:8080"
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceHA
+    depends_on:
+      - PerformanceRMI
+      - PerformanceServer
+      - PerformanceRest
 
 networks:
   dcperformance:
