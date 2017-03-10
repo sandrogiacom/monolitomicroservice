@@ -1,0 +1,168 @@
+version: "3.0"
+
+services:
+  PerformanceMysql:
+    build:
+      context: './mysql'
+    image: performance/mysql:latest
+    container_name: PerformanceMysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'teste'
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceMysql
+
+  PerformanceServer:
+    build:
+      context: './server'
+    image: performance/server:latest
+    container_name: PerformanceServer
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceMysql
+    links:
+      - PerformanceMysql
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceServer
+    volumes:
+      - ../PerformanceServer/target:/opt/performance
+
+  PerformanceServer2:
+    build:
+      context: './server'
+    image: performance/server:latest
+    container_name: PerformanceServer2
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceMysql
+    links:
+      - PerformanceMysql
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceServer2
+    volumes:
+      - ../PerformanceServer/target:/opt/performance
+
+  PerformanceRest:
+    build:
+      context: './rest'
+    image: performance/rest:latest
+    container_name: PerformanceRest
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceServer
+      - PerformanceServer2
+    links:
+      - PerformanceServer
+      - PerformanceServer2
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRest
+    volumes:
+      - ../PerformanceRest/target:/opt/performance
+
+  PerformanceRest2:
+    build:
+      context: './rest'
+    image: performance/rest:latest
+    container_name: PerformanceRest2
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceServer
+      - PerformanceServer2
+    links:
+      - PerformanceServer
+      - PerformanceServer2
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRest2
+    volumes:
+      - ../PerformanceRest/target:/opt/performance
+
+  PerformanceRMI:
+    build:
+      context: './rmi'
+    image: performance/rmi:latest
+    container_name: PerformanceRMI
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceServer
+      - PerformanceServer2
+    links:
+      - PerformanceServer
+      - PerformanceServer2
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRMI
+    volumes:
+      - ../PerformanceRMI/target:/opt/performance
+
+  PerformanceRMI2:
+    build:
+      context: './rmi'
+    image: performance/rmi:latest
+    container_name: PerformanceRMI2
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - PerformanceServer
+      - PerformanceServer2
+    links:
+      - PerformanceServer
+      - PerformanceServer2
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceRMI2
+    volumes:
+      - ../PerformanceRMI/target:/opt/performance
+
+  PerformanceHA:
+    build:
+      context: './haproxy'
+    image: performance/haproxy:latest
+    container_name: PerformanceHA
+    links:
+      - PerformanceRMI
+      - PerformanceRMI2
+      - PerformanceServer
+      - PerformanceServer2
+      - PerformanceRest
+      - PerformanceRest2
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8180:8180"
+      - "8280:8280"
+    networks:
+      dcperformance:
+        aliases:
+          - PerformanceHA
+    depends_on:
+      - PerformanceRMI
+      - PerformanceRMI2
+      - PerformanceServer
+      - PerformanceServer2
+      - PerformanceRest
+      - PerformanceRest2
+
+networks:
+  dcperformance:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/16

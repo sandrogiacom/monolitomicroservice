@@ -36,6 +36,7 @@ public class UserRest {
         List<TSTUser> l = userService.find(start, size);
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
+        log.fine("==== Users found: " + l.size());
 
         return r;
     }
@@ -87,8 +88,7 @@ public class UserRest {
         t = userService.create(t);
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
-        log.info(":::: " + r);
-        log.fine("==== " + r);
+        log.fine("==== User created: " + r);
 
         return r;
     }

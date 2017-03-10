@@ -14,7 +14,7 @@ import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
 @Stateless(name = "UserService", mappedName = "service/UserService")
 public class UserServiceImpl implements UserService {
-    Logger log = Logger.getLogger(UserService.class.getName());
+    private static final Logger log = Logger.getLogger(UserService.class.getName());
 
     @PersistenceContext(unitName = "PerformancePU")
     private EntityManager em;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         em.persist(t);
-        log.info("User created: " + t);
+        //log.info("==== User created: " + t);
         return t;
     }
 
@@ -64,8 +64,7 @@ public class UserServiceImpl implements UserService {
         q.setFirstResult(start);
         q.setMaxResults(size);
         List<TSTUser> r = q.getResultList();
-        log.info("==== Users found: " + r.size());
-        //log.fine("==== Users found: " + r.size());
+        //log.info("==== Users found: " + r.size());
         return r;
     }
 }

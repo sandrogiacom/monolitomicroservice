@@ -23,32 +23,12 @@ services:
       - PerformanceMysql
     ports:
       - "8080:8080"
-    #  - "4447:4447"
     links:
-    - PerformanceMysql
+      - PerformanceMysql
     networks:
       dcperformance:
         aliases:
           - PerformanceServer
-    volumes:
-      - ../PerformanceServer/target:/opt/performance
-
-  PerformanceServer2:
-    build:
-      context: './server'
-    image: performance/server:latest
-    container_name: PerformanceServer2
-    depends_on:
-      - PerformanceMysql
-    #ports:
-    #  - "8080:8380"
-    #  - "4447:4447"
-    links:
-    - PerformanceMysql
-    networks:
-      dcperformance:
-        aliases:
-          - PerformanceServer2
     volumes:
       - ../PerformanceServer/target:/opt/performance
 
@@ -87,22 +67,6 @@ services:
           - PerformanceRMI
     volumes:
       - ../PerformanceRMI/target:/opt/performance
-
-  PerformanceHA:
-    build:
-      context: './haproxy'
-    image: performance/haproxy:latest
-    container_name: PerformanceHA
-    links:
-      - PerformanceRMI
-    networks:
-      dcperformance:
-        aliases:
-          - PerformanceHA
-    depends_on:
-      - PerformanceRMI
-      - PerformanceServer
-      - PerformanceServer2
 
 networks:
   dcperformance:

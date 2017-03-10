@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -29,6 +30,10 @@ import org.json.JSONObject;
 
 @Path("/users")
 public class UserRest {
+    private static final Logger log = Logger.getLogger(UserRest.class.getName());
+
+    private static final boolean balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals("true");
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/find")
@@ -50,6 +55,7 @@ public class UserRest {
         List<TSTUserVO> l = parseUsers(json.getJSONArray("content"));
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
+        //log.info("==== Users found: " + l.size());
 
         return r;
     }
@@ -116,6 +122,7 @@ public class UserRest {
         } else {
             r = new RestResult(System.currentTimeMillis() - ini, null);
         }
+        //log.info("==== User created: " + r);
 
         return r;
     }
@@ -183,6 +190,6 @@ public class UserRest {
     }
 
     private static String getServerURL() {
-        return "http://PerformanceServer:8080/teste";
+        return balanced ? "http://PerformanceHA:8081/teste" : "http://PerformanceServer:8080/teste";
     }
 }
