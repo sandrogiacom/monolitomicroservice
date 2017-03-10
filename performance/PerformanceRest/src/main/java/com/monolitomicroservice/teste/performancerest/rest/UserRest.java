@@ -151,7 +151,7 @@ public class UserRest {
     }
 
     private static TSTUserVO parseUser(JSONObject content) {
-        TSTUserVO vo = new TSTUserVO();
+        TSTUserVO vo = content.keySet().contains("userCode") ? new TSTUserVO(content.getString("userCode")) : new TSTUserVO();
         for (Object key : content.keySet()) {
             switch (key.toString()) {
                 case "id":
@@ -159,9 +159,6 @@ public class UserRest {
                     break;
                 case "tenantId":
                     vo.setTenantId(content.getLong("tenantId"));
-                    break;
-                case "userCode":
-                    vo.setUserCode(content.getString("userCode"));
                     break;
                 case "login":
                     vo.setLogin(content.getString("login"));
@@ -190,6 +187,6 @@ public class UserRest {
     }
 
     private static String getServerURL() {
-        return balanced ? "http://PerformanceHA:8081/teste" : "http://PerformanceServer:8080/teste";
+        return balanced ? "http://PerformanceHALB:8081/teste" : "http://PerformanceServer:8080/teste";
     }
 }

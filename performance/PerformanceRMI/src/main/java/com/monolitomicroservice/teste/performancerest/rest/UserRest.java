@@ -1,5 +1,6 @@
 package com.monolitomicroservice.teste.performancerest.rest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -45,7 +46,7 @@ public class UserRest {
                         "false");
         clientProperties.put("remote.connections", "default");
         clientProperties.put("remote.connection.default.port", balanced ? "8081" : "8080");
-        clientProperties.put("remote.connection.default.host", balanced ? "PerformanceHA" : "PerformanceServer");
+        clientProperties.put("remote.connection.default.host", balanced ? "PerformanceHALB" : "PerformanceServer");
 
         //clientProperties.put("remote.connection.default.username", "eder");
         //clientProperties.put("remote.connection.default.password", "@eder1");
@@ -97,10 +98,36 @@ public class UserRest {
 
         UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
 
-        TSTUser user = new TSTUser();
-        user = service.create(user);
+        TSTUser t = userCode != null ? new TSTUser(userCode) : new TSTUser();
+        if (tenantId != null) {
+            t.setTenantId(tenantId);
+        }
+        if (login != null) {
+            t.setLogin(login);
+        }
+        if (password != null) {
+            t.setPassword(password);
+        }
+        if (email != null) {
+            t.setEmail(email);
+        }
+        if (firstName != null) {
+            t.setFirstName(firstName);
+        }
+        if (lastName != null) {
+            t.setLastName(lastName);
+        }
+        if (fullName != null) {
+            t.setFullName(fullName);
+        } else {
+            t.setFullName(t.getFirstName() + " " + t.getLastName());
+        }
+        if (birthDate != null) {
+            t.setBirthDate(new Date(birthDate));
+        }
+        t = service.create(t);
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, user);
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
         //log.info("==== User created: " + user);
 
         return r;
