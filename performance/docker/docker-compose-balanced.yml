@@ -130,11 +130,11 @@ services:
     volumes:
       - ../PerformanceRMI/target:/opt/performance
 
-  PerformanceHA:
+  PerformanceHALB:
     build:
-      context: './haproxy'
-    image: performance/haproxy:latest
-    container_name: PerformanceHA
+      context: './haproxylb'
+    image: performance/haproxylb:latest
+    container_name: PerformanceHALB
     links:
       - PerformanceRMI
       - PerformanceRMI2
@@ -144,13 +144,10 @@ services:
       - PerformanceRest2
     ports:
       - "8080:8080"
-      - "8081:8081"
-      - "8180:8180"
-      - "8280:8280"
     networks:
       dcperformance:
         aliases:
-          - PerformanceHA
+          - PerformanceHALB
     depends_on:
       - PerformanceRMI
       - PerformanceRMI2
