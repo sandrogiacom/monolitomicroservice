@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         em.persist(t);
-        //log.info("==== User created: " + t);
+        log.fine("==== User created: " + t);
         return t;
     }
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         q.setFirstResult(start);
         q.setMaxResults(size);
         List<TSTUser> r = q.getResultList();
-        //log.info("==== Users found: " + r.size());
+        log.fine("==== Users found: " + r.size());
         return r;
     }
 }

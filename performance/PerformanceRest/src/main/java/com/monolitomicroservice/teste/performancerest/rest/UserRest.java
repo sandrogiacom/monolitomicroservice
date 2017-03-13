@@ -55,7 +55,7 @@ public class UserRest {
         List<TSTUserVO> l = parseUsers(json.getJSONArray("content"));
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
-        //log.info("==== Users found: " + l.size());
+        log.fine("==== Users found: " + l.size());
 
         return r;
     }
@@ -122,7 +122,7 @@ public class UserRest {
         } else {
             r = new RestResult(System.currentTimeMillis() - ini, null);
         }
-        //log.info("==== User created: " + r);
+        log.fine("==== User created: " + r);
 
         return r;
     }
