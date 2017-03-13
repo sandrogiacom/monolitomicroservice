@@ -133,18 +133,16 @@ public class UserRest {
         return r;
     }
 
-    public static UserService locateCachedEJB() throws NamingException {
+    private static UserService locateCachedEJB() throws NamingException {
         if (userService == null) {
             userService = locateEJB();
         }
         return userService;
     }
 
-    public static <T> T locateEJB() throws NamingException {
+    private static <T> T locateEJB() throws NamingException {
         Properties properties = new Properties();
         properties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-        //TODO: Teste
-        //properties.put("org.jboss.ejb.client.scoped.context","true");
         Context context = new InitialContext(properties);
         return (T) context.lookup(jndiName);
     }
