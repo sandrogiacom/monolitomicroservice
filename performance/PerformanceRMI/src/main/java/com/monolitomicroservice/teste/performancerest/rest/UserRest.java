@@ -1,7 +1,6 @@
 package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -21,6 +20,8 @@ import org.jboss.ejb.client.EJBClientContext;
 import org.jboss.ejb.client.PropertiesBasedEJBClientConfiguration;
 import org.jboss.ejb.client.remoting.ConfigBasedEJBClientContextSelector;
 
+import com.monolitomicroservice.teste.performance.service.ListUserResult;
+import com.monolitomicroservice.teste.performance.service.UserResult;
 import com.monolitomicroservice.teste.performance.service.UserService;
 import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
@@ -71,10 +72,12 @@ public class UserRest {
 
         UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
 
-        List<TSTUser> l = service.find(start, size);
+        ListUserResult l = service.find(start, size);
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
-        log.fine("==== Users found: " + l.size());
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, l.getUsers(), System.getProperty("jboss.qualified.host.name"));
+        r.setServerContainer(l.getContainer());
+
+        log.fine("==== Users found: " + l.getUsers().size());
 
         return r;
     }
@@ -125,9 +128,11 @@ public class UserRest {
         if (birthDate != null) {
             t.setBirthDate(new Date(birthDate));
         }
-        t = service.create(t);
+        UserResult userResult = service.create(t);
+        t = userResult.getUser();
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, t, System.getProperty("jboss.qualified.host.name"));
+        r.setServerContainer(userResult.getContainer());
         log.fine("==== User created: " + t);
 
         return r;

@@ -1,7 +1,6 @@
 package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
@@ -13,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.monolitomicroservice.teste.performance.service.ListUserResult;
+import com.monolitomicroservice.teste.performance.service.UserResult;
 import com.monolitomicroservice.teste.performance.service.UserService;
 import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
@@ -33,10 +34,10 @@ public class UserRest {
             size = 50;
 
         long ini = System.currentTimeMillis();
-        List<TSTUser> l = userService.find(start, size);
+        ListUserResult l = userService.find(start, size);
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
-        log.fine("==== Users found: " + l.size());
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, l.getUsers(), System.getProperty("jboss.qualified.host.name"));
+        log.fine("==== Users found: " + l.getUsers().size());
 
         return r;
     }
@@ -85,9 +86,10 @@ public class UserRest {
             t.setBirthDate(new Date(birthDate));
         }
 
-        t = userService.create(t);
+        UserResult userResult = userService.create(t);
+        t = userResult.getUser();
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, t, System.getProperty("jboss.qualified.host.name"));
         log.fine("==== User created: " + r);
 
         return r;

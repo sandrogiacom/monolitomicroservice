@@ -6,6 +6,7 @@ services:
       context: './mysql'
     image: performance/mysql:latest
     container_name: PerformanceMysql
+    hostname: performancemysql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'teste'
@@ -19,6 +20,7 @@ services:
       context: './server'
     image: performance/server:latest
     container_name: PerformanceServer
+    hostname: performanceserver
     depends_on:
       - PerformanceMysql
     links:
@@ -35,6 +37,7 @@ services:
       context: './rest'
     image: performance/rest:latest
     container_name: PerformanceRest
+    hostname: performancerest
     depends_on:
       - PerformanceServer
     links:
@@ -51,6 +54,7 @@ services:
       context: './rmi'
     image: performance/rmi:latest
     container_name: PerformanceRMI
+    hostname: performancermi
     depends_on:
       - PerformanceServer
     links:
@@ -67,6 +71,7 @@ services:
       context: './haproxy'
     image: performance/haproxy:latest
     container_name: PerformanceHA
+    hostname: performanceha
     links:
       - PerformanceRMI
       - PerformanceServer

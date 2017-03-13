@@ -54,7 +54,8 @@ public class UserRest {
 
         List<TSTUserVO> l = parseUsers(json.getJSONArray("content"));
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, l, System.getProperty("jboss.qualified.host.name"));
+        r.setServerContainer(json.getString("container"));
         log.fine("==== Users found: " + l.size());
 
         return r;
@@ -118,10 +119,11 @@ public class UserRest {
         RestResult r;
         if (content != null) {
             TSTUserVO vo = parseUser(content);
-            r = new RestResult(System.currentTimeMillis() - ini, vo);
+            r = new RestResult(System.currentTimeMillis() - ini, vo, System.getProperty("jboss.qualified.host.name"));
         } else {
-            r = new RestResult(System.currentTimeMillis() - ini, null);
+            r = new RestResult(System.currentTimeMillis() - ini, null, System.getProperty("jboss.qualified.host.name"));
         }
+        r.setServerContainer(json.getString("container"));
         log.fine("==== User created: " + r);
 
         return r;

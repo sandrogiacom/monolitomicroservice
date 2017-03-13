@@ -8,13 +8,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RestResult implements Serializable {
     private Long elapsedTime;
     private Object content;
+    private String container;
+    private String serverContainer;
 
-    public RestResult() {
-    }
-
-    public RestResult(Long elapsedTime, Object result) {
+    public RestResult(Long elapsedTime, Object result, String container) {
         this.elapsedTime = elapsedTime;
         this.content = result;
+        this.container = container;
     }
 
     public Long getElapsedTime() {
@@ -33,10 +33,28 @@ public class RestResult implements Serializable {
         this.content = content;
     }
 
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
+    }
+
+    public String getServerContainer() {
+        return serverContainer;
+    }
+
+    public void setServerContainer(String serverContainer) {
+        this.serverContainer = serverContainer;
+    }
+
     @Override
     public String toString() {
         return "RestResult{" +
                 "elapsedTime=" + elapsedTime +
+                ", container=" + container +
+                ", serverContainer=" + serverContainer +
                 ", content=" + content +
                 '}';
     }

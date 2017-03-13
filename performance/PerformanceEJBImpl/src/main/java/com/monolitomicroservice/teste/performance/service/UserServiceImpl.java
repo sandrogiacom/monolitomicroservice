@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public TSTUser create(TSTUser t) throws Exception {
+    public UserResult create(TSTUser t) throws Exception {
         if (findByCode(t.getUserCode()) != null) {
             throw new Exception("Duplicated user code: " + t.getUserCode());
         }
@@ -31,16 +31,16 @@ public class UserServiceImpl implements UserService {
 
         em.persist(t);
         log.fine("==== User created: " + t);
-        return t;
+        return new UserResult(System.getProperty("jboss.qualified.host.name"), t);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public TSTUser findByCode(String userCode) {
+    public UserResult findByCode(String userCode) {
         TypedQuery<TSTUser> q = em.createNamedQuery("TSTUser.findByCode", TSTUser.class);
         q.setParameter("userCode", userCode);
         try {
-            return q.getSingleResult();
+            return new UserResult(System.getProperty("jboss.qualified.host.name"), q.getSingleResult());
         } catch (Exception ex) {
             return null;
         }
@@ -48,23 +48,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public TSTUser findByLogin(String login) {
+    public UserResult findByLogin(String login) {
         TypedQuery<TSTUser> q = em.createNamedQuery("TSTUser.findByLogin", TSTUser.class);
         q.setParameter("login", login);
         try {
-            return q.getSingleResult();
+            return new UserResult(System.getProperty("jboss.qualified.host.name"), q.getSingleResult());
         } catch (Exception ex) {
             return null;
         }
     }
 
     @Override
-    public List<TSTUser> find(int start, int size) {
+    public ListUserResult find(int start, int size) {
         TypedQuery<TSTUser> q = em.createNamedQuery("TSTUser.findByRange", TSTUser.class);
         q.setFirstResult(start);
         q.setMaxResults(size);
         List<TSTUser> r = q.getResultList();
         log.fine("==== Users found: " + r.size());
-        return r;
+        return new ListUserResult(System.getProperty("jboss.qualified.host.name"), r);
     }
 }
