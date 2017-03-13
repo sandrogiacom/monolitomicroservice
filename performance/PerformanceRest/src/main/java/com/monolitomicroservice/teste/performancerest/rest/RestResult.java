@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "content")
 public class RestResult implements Serializable {
     private Long elapsedTime;
-    private Object content;
     private String container;
     private String serverContainer;
+    private Object content;
 
     public RestResult(Long elapsedTime, Object result, String container) {
         this.elapsedTime = elapsedTime;
@@ -23,14 +23,6 @@ public class RestResult implements Serializable {
 
     public void setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
-    }
-
-    public Object getContent() {
-        return content;
-    }
-
-    public void setContent(Object content) {
-        this.content = content;
     }
 
     public String getContainer() {
@@ -47,6 +39,14 @@ public class RestResult implements Serializable {
 
     public void setServerContainer(String serverContainer) {
         this.serverContainer = serverContainer;
+    }
+
+    public Object getContent() {
+        return content;
+    }
+
+    public void setContent(Object content) {
+        this.content = content;
     }
 
     @Override
