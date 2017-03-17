@@ -1,6 +1,7 @@
 package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -20,10 +21,10 @@ import org.jboss.ejb.client.EJBClientContext;
 import org.jboss.ejb.client.PropertiesBasedEJBClientConfiguration;
 import org.jboss.ejb.client.remoting.ConfigBasedEJBClientContextSelector;
 
-import com.monolitomicroservice.teste.performance.service.ListUserResult;
-import com.monolitomicroservice.teste.performance.service.UserResult;
+import com.monolitomicroservice.teste.performance.common.CallResult;
+import com.monolitomicroservice.teste.performance.common.RestResult;
+import com.monolitomicroservice.teste.performance.common.UserVO;
 import com.monolitomicroservice.teste.performance.service.UserService;
-import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
 @Path("/users")
 public class UserRest {
@@ -47,7 +48,7 @@ public class UserRest {
                         "false");
         clientProperties.put("remote.connections", "default");
         clientProperties.put("remote.connection.default.port", balanced ? "8081" : "8080");
-        clientProperties.put("remote.connection.default.host", balanced ? "PerformanceHALB" : "PerformanceServer");
+        clientProperties.put("remote.connection.default.host", balanced ? "performancehalb" : "performanceserver");
 
         //clientProperties.put("remote.connection.default.username", "eder");
         //clientProperties.put("remote.connection.default.password", "@eder1");
@@ -57,30 +58,6 @@ public class UserRest {
     }
 
     private static UserService userService = null;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/find")
-    public RestResult find(@QueryParam("start") int start, @QueryParam("size") int size,
-            @QueryParam("cached") @DefaultValue("false") String cached) throws Exception {
-        long ini = System.currentTimeMillis();
-
-        if (start < 0)
-            start = 0;
-        if (size <= 0)
-            size = 50;
-
-        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
-
-        ListUserResult l = service.find(start, size);
-
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l.getUsers(), System.getProperty("jboss.qualified.host.name"));
-        r.setServerContainer(l.getContainer());
-
-        log.fine("==== Users found: " + l.getUsers().size());
-
-        return r;
-    }
 
     @POST
     @GET
@@ -101,7 +78,7 @@ public class UserRest {
 
         UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
 
-        TSTUser t = userCode != null ? new TSTUser(userCode) : new TSTUser();
+        UserVO t = userCode != null ? new UserVO(userCode) : new UserVO();
         if (tenantId != null) {
             t.setTenantId(tenantId);
         }
@@ -128,12 +105,36 @@ public class UserRest {
         if (birthDate != null) {
             t.setBirthDate(new Date(birthDate));
         }
-        UserResult userResult = service.create(t);
-        t = userResult.getUser();
+        CallResult userResult = service.create(t);
+        t = (UserVO) userResult.getContent();
 
         RestResult r = new RestResult(System.currentTimeMillis() - ini, t, System.getProperty("jboss.qualified.host.name"));
         r.setServerContainer(userResult.getContainer());
         log.fine("==== User created: " + t);
+
+        return r;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/find")
+    public RestResult find(@QueryParam("start") int start, @QueryParam("size") int size,
+            @QueryParam("cached") @DefaultValue("false") String cached) throws Exception {
+        long ini = System.currentTimeMillis();
+
+        if (start < 0)
+            start = 0;
+        if (size <= 0)
+            size = 50;
+
+        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
+
+        CallResult l = service.find(start, size);
+
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, l.getContent(), System.getProperty("jboss.qualified.host.name"));
+        r.setServerContainer(l.getContainer());
+
+        log.fine("==== Users found: " + ((List) l.getContent()).size());
 
         return r;
     }

@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.teste.monolitomicroservice</groupId>
-    <artifactId>PerformanceEJBImpl</artifactId>
-    <name>Monolito To Microservice : Performance : EJB Impl</name>
+    <artifactId>PerformanceCommon</artifactId>
+    <name>Monolito To Microservice : Performance : Common</name>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>ejb</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <version.wildfly.swarm>2017.3.3</version.wildfly.swarm>
@@ -29,7 +29,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>PerformanceEJBImpl</finalName>
+        <finalName>PerformanceCommon</finalName>
     </build>
 
     <dependencies>
@@ -39,22 +39,6 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>PerformanceJPA</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>PerformanceCommon</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>PerformanceEJBInterface</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

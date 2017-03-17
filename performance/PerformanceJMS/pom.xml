@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
+        <version.wildfly.swarm>2017.3.3</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -38,8 +38,9 @@
                 <configuration>
                     <bundleDependencies>true</bundleDependencies>
                     <properties>
-                        <swarm.http.port>8380</swarm.http.port>
+                        <swarm.http.port>8080</swarm.http.port>
                         <swarm.context.path>/testejms</swarm.context.path>
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                     </properties>
                 </configuration>
                 <executions>
@@ -65,16 +66,15 @@
         <!-- WildFly Swarm Fractions -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>transactions</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -87,6 +87,49 @@
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>management</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>ejb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>ejb-remote</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-remote-naming</artifactId>
+            <version>2.0.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-api</artifactId>
+            <version>3.4.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-nio</artifactId>
+            <version>3.4.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jms-client</artifactId>
+            <version>1.1.0.wildfly-017</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>PerformanceCommon</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

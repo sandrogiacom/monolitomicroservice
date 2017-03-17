@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
+        <version.wildfly.swarm>2017.3.3</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -40,6 +40,8 @@
                     <properties>
                         <swarm.http.port>8080</swarm.http.port>
                         <swarm.context.path>/teste</swarm.context.path>
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                        <!-- Datasource -->
                         <swarm.ds.name>PerformanceDS</swarm.ds.name>
                         <swarm.ds.username>root</swarm.ds.username>
                         <swarm.ds.password>root</swarm.ds.password>
@@ -47,8 +49,18 @@
                         <!-- swarm.ds.swarm.ds.xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource
                         </swarm.ds.swarm.ds.xa-datasource-class -->
                         <!-- driver-class>com.mysql.jdbc.Driver</driver-class -->
-                        <swarm.ds.connection.url>jdbc:mysql://PerformanceMysql/teste</swarm.ds.connection.url>
+                        <swarm.ds.connection.url>jdbc:mysql://performancemysql/teste</swarm.ds.connection.url>
+
+                        <!-- JMS -->
+                        <!--
+                        <swarm.messaging.remote>true</swarm.messaging.remote>
+                        <swarm.messaging.remote.name>remote-mq</swarm.messaging.remote.name>
+                        <swarm.messaging.remote.jndi-name>java:/jms/remote-mq</swarm.messaging.remote.jndi-name>
+                        <swarm.messaging.remote.port>61616</swarm.messaging.remote.port>
+                        -->
+                        <!-- swarm.messaging.remote.host>localhost</swarm.messaging.remote.host -->
                     </properties>
+                    <!-- mainClass>com.monolitomicroservice.teste.Startup</mainClass -->
                 </configuration>
                 <executions>
                     <execution>
@@ -71,13 +83,52 @@
         </dependency>
 
         <!-- WildFly Swarm Fractions -->
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jpa</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>jaxrs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jaxrs-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>transactions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>monitor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>management</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>ejb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>ejb-remote</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -88,6 +139,9 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.26</version>
         </dependency>
+
+
+        <!--
 
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
@@ -121,12 +175,16 @@
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>logging</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>messaging</artifactId>
+        </dependency>
+        -->
 
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>PerformanceJPA</artifactId>
+            <artifactId>PerformanceCommon</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
