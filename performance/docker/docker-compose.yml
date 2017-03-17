@@ -1,86 +1,110 @@
 version: "3.0"
 
 services:
-  PerformanceMysql:
+  performancemysql:
     build:
       context: './mysql'
     image: performance/mysql:latest
-    container_name: PerformanceMysql
+    container_name: performancemysql
+    hostname: performancemysql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_DATABASE: 'teste'
     networks:
       dcperformance:
         aliases:
-          - PerformanceMysql
+          - performancemysql
 
-  PerformanceServer:
+  performanceserver:
     build:
       context: './server'
     image: performance/server:latest
-    container_name: PerformanceServer
+    container_name: performanceserver
+    hostname: performanceserver
     depends_on:
-      - PerformanceMysql
+      - performancemysql
     links:
-      - PerformanceMysql
+      - performancemysql
     networks:
       dcperformance:
         aliases:
-          - PerformanceServer
+          - performanceserver
     volumes:
       - ../PerformanceServer/target:/opt/performance
 
-  PerformanceRest:
+  performancerest:
     build:
       context: './rest'
     image: performance/rest:latest
-    container_name: PerformanceRest
+    container_name: performancerest
+    hostname: performancerest
     depends_on:
-      - PerformanceServer
+      - performanceserver
     links:
-      - PerformanceServer
+      - performanceserver
     networks:
       dcperformance:
         aliases:
-          - PerformanceRest
+          - performancerest
     volumes:
       - ../PerformanceRest/target:/opt/performance
 
-  PerformanceRMI:
+  performancermi:
     build:
       context: './rmi'
     image: performance/rmi:latest
-    container_name: PerformanceRMI
+    container_name: performancermi
+    hostname: performancermi
     depends_on:
-      - PerformanceServer
+      - performanceserver
     links:
-      - PerformanceServer
+      - performanceserver
     networks:
       dcperformance:
         aliases:
-          - PerformanceRMI
+          - performancermi
     volumes:
       - ../PerformanceRMI/target:/opt/performance
 
-  PerformanceHA:
+  performancejms:
+    build:
+      context: './jms'
+    image: performance/jms:latest
+    container_name: performancejms
+    hostname: performancejms
+    depends_on:
+      - performanceserver
+    links:
+      - performanceserver
+    networks:
+      dcperformance:
+        aliases:
+          - performancejms
+    volumes:
+      - ../PerformanceJMS/target:/opt/performance
+
+  performanceha:
     build:
       context: './haproxy'
     image: performance/haproxy:latest
-    container_name: PerformanceHA
+    container_name: performanceha
+    hostname: performanceha
     links:
-      - PerformanceRMI
-      - PerformanceServer
-      - PerformanceRest
+      - performancermi
+      - performanceserver
+      - performancerest
+      - performancejms
     ports:
       - "8080:8080"
     networks:
       dcperformance:
         aliases:
-          - PerformanceHA
+          - performanceha
     depends_on:
-      - PerformanceRMI
-      - PerformanceServer
-      - PerformanceRest
+      - performancermi
+      - performanceserver
+      - performancerest
+      - performancejms
 
 networks:
   dcperformance:

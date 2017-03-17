@@ -15,6 +15,7 @@
     </properties>
 
     <modules>
+        <module>PerformanceCommon</module>
         <module>PerformanceJPA</module>
         <module>PerformanceEJBInterface</module>
         <module>PerformanceEJBImpl</module>

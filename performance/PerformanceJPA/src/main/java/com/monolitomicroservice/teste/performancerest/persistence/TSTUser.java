@@ -85,6 +85,20 @@ public class TSTUser implements Serializable {
         this.birthDate = new Date();
     }
 
+    public TSTUser(Long id, Long tenantId, String userCode, String login, String password, String email,
+            String firstName, String lastName, String fullName, Date birthDate) {
+        this.id = id;
+        this.tenantId = tenantId;
+        this.userCode = userCode;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+    }
+
     public Long getId() {
         return id;
     }

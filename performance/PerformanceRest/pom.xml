@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.wildfly.swarm>2017.2.0</version.wildfly.swarm>
+        <version.wildfly.swarm>2017.3.3</version.wildfly.swarm>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -38,8 +38,9 @@
                 <configuration>
                     <bundleDependencies>true</bundleDependencies>
                     <properties>
-                        <swarm.http.port>8180</swarm.http.port>
+                        <swarm.http.port>8080</swarm.http.port>
                         <swarm.context.path>/testerest</swarm.context.path>
+                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                     </properties>
                 </configuration>
                 <executions>
@@ -94,10 +95,11 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.3</version>
         </dependency>
+
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20140107</version>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>PerformanceCommon</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

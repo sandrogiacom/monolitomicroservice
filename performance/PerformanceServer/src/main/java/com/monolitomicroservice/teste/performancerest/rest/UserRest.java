@@ -13,8 +13,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.monolitomicroservice.teste.performance.common.CallResult;
+import com.monolitomicroservice.teste.performance.common.RestResult;
+import com.monolitomicroservice.teste.performance.common.UserVO;
 import com.monolitomicroservice.teste.performance.service.UserService;
-import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
 @Path("/users")
 public class UserRest {
@@ -33,10 +35,10 @@ public class UserRest {
             size = 50;
 
         long ini = System.currentTimeMillis();
-        List<TSTUser> l = userService.find(start, size);
+        CallResult l = userService.find(start, size);
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
-        log.fine("==== Users found: " + l.size());
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, l.getContent(), System.getProperty("jboss.qualified.host.name"));
+        log.fine("==== Users found: " + ((List) l.getContent()).size());
 
         return r;
     }
@@ -56,7 +58,7 @@ public class UserRest {
             @FormParam("birthDate") Long birthDate) throws Exception {
 
         long ini = System.currentTimeMillis();
-        TSTUser t = userCode == null ? new TSTUser() : new TSTUser(userCode);
+        UserVO t = userCode == null ? new UserVO() : new UserVO(userCode);
 
         if (tenantId != null) {
             t.setTenantId(tenantId);
@@ -85,9 +87,10 @@ public class UserRest {
             t.setBirthDate(new Date(birthDate));
         }
 
-        t = userService.create(t);
+        CallResult userResult = userService.create(t);
+        t = (UserVO) userResult.getContent();
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, t);
+        RestResult r = new RestResult(System.currentTimeMillis() - ini, t, System.getProperty("jboss.qualified.host.name"));
         log.fine("==== User created: " + r);
 
         return r;

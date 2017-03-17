@@ -1,12 +1,10 @@
 package com.monolitomicroservice.teste.performancerest.rest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
@@ -25,8 +23,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.monolitomicroservice.teste.performance.common.RestResult;
+import com.monolitomicroservice.teste.performance.common.UserVO;
 
 @Path("/users")
 public class UserRest {
@@ -50,12 +51,13 @@ public class UserRest {
         HttpClient httpClient = HttpClientBuilder.create().build();
 
         HttpResponse response = httpClient.execute(get);
-        JSONObject json = responseToJSonObject(response);
+        RestResult cr = responseToJSonObject(response);
 
-        List<TSTUserVO> l = parseUsers(json.getJSONArray("content"));
+        RestResult r = new RestResult(System.currentTimeMillis() - ini,
+                cr.getContent(), System.getProperty("jboss.qualified.host.name"));
 
-        RestResult r = new RestResult(System.currentTimeMillis() - ini, l);
-        log.fine("==== Users found: " + l.size());
+        r.setServerContainer(cr.getContainer());
+        log.fine("==== Users found: " + ((List) r.getContent()).size());
 
         return r;
     }
@@ -112,81 +114,33 @@ public class UserRest {
         HttpClient httpClient = HttpClientBuilder.create().build();
 
         HttpResponse response = httpClient.execute(post);
-        JSONObject json = responseToJSonObject(response);
-        JSONObject content = json.getJSONObject("content");
+        RestResult cr = responseToJSonObject(response);
 
-        RestResult r;
-        if (content != null) {
-            TSTUserVO vo = parseUser(content);
-            r = new RestResult(System.currentTimeMillis() - ini, vo);
-        } else {
-            r = new RestResult(System.currentTimeMillis() - ini, null);
-        }
+        RestResult r = new RestResult(System.currentTimeMillis() - ini,
+                cr.getContent(), System.getProperty("jboss.qualified.host.name"));
+
+        r.setServerContainer(cr.getContainer());
         log.fine("==== User created: " + r);
 
         return r;
     }
 
-    private static JSONObject responseToJSonObject(HttpResponse response) throws IOException {
-        StringWriter writer = new StringWriter();
-        BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        String line = br.readLine();
-        while (line != null) {
-            writer.write(line);
-            line = br.readLine();
-        }
-
-        JSONObject json = new JSONObject(writer.toString());
-        return json;
-    }
-
-    private static List<TSTUserVO> parseUsers(JSONArray content) {
-        List<TSTUserVO> r = new ArrayList<>();
-        if (content != null) {
-            for (int i = 0; i < content.length(); i++) {
-                r.add(parseUser(content.getJSONObject(i)));
+    private static RestResult responseToJSonObject(HttpResponse response) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.getSubtypeResolver().registerSubtypes(new NamedType(UserVO.class, "content"));
+        RestResult cr = mapper.readValue(response.getEntity().getContent(), RestResult.class);
+        if (cr.getContent() != null) {
+            if (cr.getContent() instanceof List) {
+                cr.setContent(Arrays.asList(mapper.convertValue(cr.getContent(), UserVO[].class)));
+            } else if (cr.getContent() instanceof Map) {
+                cr.setContent(mapper.convertValue(cr.getContent(), UserVO.class));
             }
         }
-        return r;
+        return cr;
     }
 
-    private static TSTUserVO parseUser(JSONObject content) {
-        TSTUserVO vo = content.keySet().contains("userCode") ? new TSTUserVO(content.getString("userCode")) : new TSTUserVO();
-        for (Object key : content.keySet()) {
-            switch (key.toString()) {
-                case "id":
-                    vo.setId(content.getLong("id"));
-                    break;
-                case "tenantId":
-                    vo.setTenantId(content.getLong("tenantId"));
-                    break;
-                case "login":
-                    vo.setLogin(content.getString("login"));
-                    break;
-                case "password":
-                    vo.setPassword(content.getString("password"));
-                    break;
-                case "email":
-                    vo.setEmail(content.getString("email"));
-                    break;
-                case "firstName":
-                    vo.setFirstName(content.getString("firstName"));
-                    break;
-                case "lastName":
-                    vo.setLastName(content.getString("lastName"));
-                    break;
-                case "fullName":
-                    vo.setFullName(content.getString("fullName"));
-                    break;
-                case "birthDate":
-                    vo.setBirthDate(new Date(content.getLong("birthDate")));
-                    break;
-            }
-        }
-        return vo;
-    }
 
     private static String getServerURL() {
-        return balanced ? "http://PerformanceHALB:8081/teste" : "http://PerformanceServer:8080/teste";
+        return balanced ? "http://performancehalb:8081/teste" : "http://performanceha:8080/teste";
     }
 }

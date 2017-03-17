@@ -1,18 +1,17 @@
 package com.monolitomicroservice.teste.performance.service;
 
-import java.util.List;
-
 import javax.ejb.Remote;
 
-import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
+import com.monolitomicroservice.teste.performance.common.CallResult;
+import com.monolitomicroservice.teste.performance.common.UserVO;
 
 @Remote
 public interface UserService {
-    TSTUser create(TSTUser t) throws Exception;
+    CallResult create(UserVO t) throws Exception;
 
-    TSTUser findByCode(String userCode);
+    CallResult findByCode(String userCode);
 
-    TSTUser findByLogin(String login);
+    CallResult findByLogin(String login);
 
-    List<TSTUser> find(int start, int size);
+    CallResult find(int start, int size);
 }

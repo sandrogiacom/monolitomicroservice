@@ -1,13 +1,14 @@
-package com.monolitomicroservice.teste.performancerest.rest;
+package com.monolitomicroservice.teste.performance.common;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "user")
-public class TSTUserVO implements Serializable {
+public class UserVO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private Long tenantId;
     private String userCode;
@@ -19,11 +20,11 @@ public class TSTUserVO implements Serializable {
     private String fullName;
     private Date birthDate;
 
-    public TSTUserVO() {
+    public UserVO() {
         this(String.valueOf(System.nanoTime()));
     }
 
-    public TSTUserVO(String userCode) {
+    public UserVO(String userCode) {
         this.tenantId = 1l;
         this.userCode = userCode;
         this.login = this.userCode;
@@ -35,12 +36,66 @@ public class TSTUserVO implements Serializable {
         this.birthDate = new Date();
     }
 
+    public UserVO(Long id, Long tenantId, String userCode, String login, String password, String email,
+            String firstName, String lastName, String fullName, Date birthDate) {
+        this.id = id;
+        this.tenantId = tenantId;
+        this.userCode = userCode;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -75,74 +130,19 @@ public class TSTUserVO implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public Long getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUserCode() {
-        return userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        TSTUserVO tstUser = (TSTUserVO) o;
-        return Objects.equals(login, tstUser.login);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(login);
-    }
-
     @Override
     public String toString() {
-        return "TSTUser {" +
+        return "UserVO{" +
                 "id=" + id +
+                ", tenantId=" + tenantId +
+                ", userCode='" + userCode + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", birthDate=" + birthDate +
-                ", tenantId=" + tenantId +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", userCode='" + userCode + '\'' +
                 '}';
     }
 }
