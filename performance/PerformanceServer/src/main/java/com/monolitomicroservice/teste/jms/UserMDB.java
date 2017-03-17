@@ -23,6 +23,7 @@ import com.monolitomicroservice.teste.performance.service.UserService;
 @MessageDriven(name = "UserQueue", activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "/jms/queue/UserQueue"),
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge")
 })
 public class UserMDB implements MessageListener {
     private static final Logger log = Logger.getLogger(UserMDB.class.getName());

@@ -1,11 +1,11 @@
 version: "3.0"
 
 services:
-  PerformanceMysql:
+  performancemysql:
     build:
       context: './mysql'
     image: performance/mysql:latest
-    container_name: PerformanceMysql
+    container_name: performancemysql
     hostname: performancemysql
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
@@ -13,156 +13,202 @@ services:
     networks:
       dcperformance:
         aliases:
-          - PerformanceMysql
+          - performancemysql
 
-  PerformanceServer:
+  performanceserver:
     build:
       context: './server'
     image: performance/server:latest
-    container_name: PerformanceServer
+    container_name: performanceserver
     hostname: performanceserver
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceMysql
+      - performancemysql
     links:
-      - PerformanceMysql
+      - performancemysql
     networks:
       dcperformance:
         aliases:
-          - PerformanceServer
+          - performanceserver
     volumes:
       - ../PerformanceServer/target:/opt/performance
 
-  PerformanceServer2:
+  performanceserver2:
     build:
       context: './server'
     image: performance/server:latest
-    container_name: PerformanceServer2
+    container_name: performanceserver2
     hostname: performanceserver2
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceMysql
+      - performancemysql
     links:
-      - PerformanceMysql
+      - performancemysql
     networks:
       dcperformance:
         aliases:
-          - PerformanceServer2
+          - performanceserver2
     volumes:
       - ../PerformanceServer/target:/opt/performance
 
-  PerformanceRest:
+  performancerest:
     build:
       context: './rest'
     image: performance/rest:latest
-    container_name: PerformanceRest
+    container_name: performancerest
     hostname: performancerest
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     links:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     networks:
       dcperformance:
         aliases:
-          - PerformanceRest
+          - performancerest
     volumes:
       - ../PerformanceRest/target:/opt/performance
 
-  PerformanceRest2:
+  performancerest2:
     build:
       context: './rest'
     image: performance/rest:latest
-    container_name: PerformanceRest2
+    container_name: performancerest2
     hostname: performancerest2
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     links:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     networks:
       dcperformance:
         aliases:
-          - PerformanceRest2
+          - performancerest2
     volumes:
       - ../PerformanceRest/target:/opt/performance
 
-  PerformanceRMI:
+  performancermi:
     build:
       context: './rmi'
     image: performance/rmi:latest
-    container_name: PerformanceRMI
+    container_name: performancermi
     hostname: performancermi
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     links:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     networks:
       dcperformance:
         aliases:
-          - PerformanceRMI
+          - performancermi
     volumes:
       - ../PerformanceRMI/target:/opt/performance
 
-  PerformanceRMI2:
+  performancermi2:
     build:
       context: './rmi'
     image: performance/rmi:latest
-    container_name: PerformanceRMI2
+    container_name: performancermi2
     hostname: performancermi2
     environment:
       BALANCED: 'true'
     depends_on:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     links:
-      - PerformanceServer
-      - PerformanceServer2
+      - performanceserver
+      - performanceserver2
     networks:
       dcperformance:
         aliases:
-          - PerformanceRMI2
+          - performancermi2
     volumes:
       - ../PerformanceRMI/target:/opt/performance
 
-  PerformanceHALB:
+  performancejms:
+    build:
+      context: './jms'
+    image: performance/jms:latest
+    container_name: performancejms
+    hostname: performancejms
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - performanceserver
+      - performanceserver2
+    links:
+      - performanceserver
+      - performanceserver2
+    networks:
+      dcperformance:
+        aliases:
+          - performancejms
+    volumes:
+      - ../PerformanceJMS/target:/opt/performance
+
+  performancejms2:
+    build:
+      context: './jms'
+    image: performance/jms:latest
+    container_name: performancejms2
+    hostname: performancejms2
+    environment:
+      BALANCED: 'true'
+    depends_on:
+      - performanceserver
+      - performanceserver2
+    links:
+      - performanceserver
+      - performanceserver2
+    networks:
+      dcperformance:
+        aliases:
+          - performancejms2
+    volumes:
+      - ../PerformanceJMS/target:/opt/performance
+
+  performancehalb:
     build:
       context: './haproxylb'
     image: performance/haproxylb:latest
-    container_name: PerformanceHALB
+    container_name: performancehalb
     hostname: performancehalb
     links:
-      - PerformanceRMI
-      - PerformanceRMI2
-      - PerformanceServer
-      - PerformanceServer2
-      - PerformanceRest
-      - PerformanceRest2
+      - performancermi
+      - performancermi2
+      - performancejms
+      - performancejms2
+      - performanceserver
+      - performanceserver2
+      - performancerest
+      - performancerest2
     ports:
       - "8080:8080"
     networks:
       dcperformance:
         aliases:
-          - PerformanceHALB
+          - performancehalb
     depends_on:
-      - PerformanceRMI
-      - PerformanceRMI2
-      - PerformanceServer
-      - PerformanceServer2
-      - PerformanceRest
-      - PerformanceRest2
+      - performancermi
+      - performancermi2
+      - performancejms
+      - performancejms2
+      - performanceserver
+      - performanceserver2
+      - performancerest
+      - performancerest2
 
 networks:
   dcperformance:

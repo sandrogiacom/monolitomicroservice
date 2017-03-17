@@ -145,9 +145,6 @@ public class UserRest {
             ObjectMapper mapper = new ObjectMapper();
             RestResult cr = mapper.readValue(msgRet.getText(), RestResult.class);
             List<UserVO> l = Arrays.asList(mapper.convertValue(cr.getContent(), UserVO[].class));
-            //List<UserVO> l = (List<UserVO>) cr.getContent();
-            //List<UserVO> l = Arrays.asList(mapper.readValue(msgRet.getStringProperty("content"), UserVO[].class));
-            ////List<TSTUserVO> l = mapper.readValue(msgRet.getStringProperty("content"), mapper.getTypeFactory().constructCollectionType(List.class, TSTUserVO.class));
 
             RestResult r = new RestResult(System.currentTimeMillis() - ini, l, System.getProperty("jboss.qualified.host.name"));
             r.setServerContainer(cr.getContainer());
