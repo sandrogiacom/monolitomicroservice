@@ -12,4 +12,4 @@ Convertendo uma aplicação monolítica JEE para Microserviços
     - Rode o script TimeMeasurementMono.jmx com o JMeter 3.1
 - 10 usu&aacute;rios, dois servidores para cada servi&ccedil;o
     - Para executar, inicie o docker-compose usando o arquivo docker/docker-compose-balanced.yml
-    - Rode o script TimeMeasurementBalancer.jmx com o JMeter 3.1
+    - Rode o script TimeMeasurementBalanced.jmx com o JMeter 3.1
