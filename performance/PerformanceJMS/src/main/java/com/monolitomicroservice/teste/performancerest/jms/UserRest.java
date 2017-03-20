@@ -39,6 +39,7 @@ public class UserRest {
     private static Context context;
     private static ConnectionFactory factory;
     private static Destination queue;
+    private static JMSContext jmsContext;
 
     static {
         balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals("true");
@@ -66,11 +67,12 @@ public class UserRest {
         Context context = getContext(cached.equals("true"));
         ConnectionFactory factory = (ConnectionFactory) context.lookup("jms/RemoteConnectionFactory");
         Destination queue = (Destination) context.lookup("jms/queue/UserQueue");
+        JMSContext jmxCtx = getJmsContext(cached.equals("true"), factory);
 
-        try (JMSContext jmsContext = factory.createContext()) {
-            JMSProducer producer = jmsContext.createProducer();
+        try {
+            JMSProducer producer = jmxCtx.createProducer();
 
-            ObjectMessage message = jmsContext.createObjectMessage();
+            ObjectMessage message = jmxCtx.createObjectMessage();
             message.setStringProperty("action", "create");
 
             if (tenantId != null && tenantId > 0)
@@ -92,13 +94,13 @@ public class UserRest {
             if (birthDate != null && birthDate.longValue() > 0)
                 message.setLongProperty("birthDate", birthDate.longValue());
 
-            TemporaryQueue tempDest = jmsContext.createTemporaryQueue();
+            TemporaryQueue tempDest = jmxCtx.createTemporaryQueue();
             message.setJMSReplyTo(tempDest);
             message.setJMSCorrelationID(String.valueOf(System.nanoTime()));
 
             producer.send(queue, message);
 
-            TextMessage msgRet = (TextMessage) jmsContext.createConsumer(tempDest).receive(3000l);
+            TextMessage msgRet = (TextMessage) jmxCtx.createConsumer(tempDest).receive(3000l);
             ObjectMapper mapper = new ObjectMapper();
             mapper.getSubtypeResolver().registerSubtypes(new NamedType(UserVO.class, "content"));
             RestResult cr = mapper.readValue(msgRet.getText(), RestResult.class);
@@ -110,6 +112,10 @@ public class UserRest {
             log.fine("==== User created: " + r);
 
             return r;
+        } finally {
+            if (jmxCtx != null && !cached.equals("true")) {
+                jmxCtx.close();
+            }
         }
     }
 
@@ -123,24 +129,25 @@ public class UserRest {
         Context context = getContext(cached.equals("true"));
         ConnectionFactory factory = (ConnectionFactory) context.lookup("jms/RemoteConnectionFactory");
         Destination queue = (Destination) context.lookup("jms/queue/UserQueue");
+        JMSContext jmxCtx = getJmsContext(cached.equals("true"), factory);
 
-        try (JMSContext jmsContext = factory.createContext()) {
-            JMSProducer producer = jmsContext.createProducer();
+        try {
+            JMSProducer producer = jmxCtx.createProducer();
 
-            ObjectMessage message = jmsContext.createObjectMessage();
+            ObjectMessage message = jmxCtx.createObjectMessage();
             message.setStringProperty("action", "find");
             if (start > 0)
                 message.setIntProperty("start", start);
             if (size > 0)
                 message.setIntProperty("size", size);
 
-            TemporaryQueue tempDest = jmsContext.createTemporaryQueue();
+            TemporaryQueue tempDest = jmxCtx.createTemporaryQueue();
             message.setJMSReplyTo(tempDest);
             message.setJMSCorrelationID(String.valueOf(System.nanoTime()));
 
             producer.send(queue, message);
 
-            TextMessage msgRet = (TextMessage) jmsContext.createConsumer(tempDest).receive(3000l);
+            TextMessage msgRet = (TextMessage) jmxCtx.createConsumer(tempDest).receive(3000l);
 
             ObjectMapper mapper = new ObjectMapper();
             RestResult cr = mapper.readValue(msgRet.getText(), RestResult.class);
@@ -152,6 +159,10 @@ public class UserRest {
             log.fine("==== Users found: " + r);
 
             return r;
+        } finally {
+            if (jmxCtx != null && !cached.equals("true")) {
+                jmxCtx.close();
+            }
         }
     }
 
@@ -186,5 +197,16 @@ public class UserRest {
             queue = q;
         }
         return q;
+    }
+
+    private static JMSContext getJmsContext(boolean cached, ConnectionFactory factory) {
+        if (cached && jmsContext != null) {
+            return jmsContext;
+        }
+        JMSContext ctx = factory.createContext();
+        if (cached) {
+            jmsContext = ctx;
+        }
+        return ctx;
     }
 }
