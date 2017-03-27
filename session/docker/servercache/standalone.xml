@@ -389,6 +389,18 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:security:1.2">
             <security-domains>
+                <security-domain name="my-domain" cache-type="default">
+                    <authentication>
+                        <login-module code="Database" flag="required">
+                            <module-option name="dsJndiName" value="java:jboss/datasources/SessionDS"/>
+                            <module-option name="principalsQuery"
+                                           value="SELECT password FROM session_user WHERE login=?"/>
+                            <module-option name="rolesQuery"
+                                           value="SELECT role_code, 'Roles' FROM session_user_role WHERE login=?"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+
                 <security-domain name="other" cache-type="default">
                     <authentication>
                         <login-module code="Remoting" flag="optional">

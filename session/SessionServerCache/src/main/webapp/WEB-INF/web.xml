@@ -31,7 +31,7 @@
 
     <login-config>
         <auth-method>FORM</auth-method>
-        <realm-name>other</realm-name>
+        <realm-name>my-domain</realm-name>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
             <form-error-page>/loginfail.jsp</form-error-page>

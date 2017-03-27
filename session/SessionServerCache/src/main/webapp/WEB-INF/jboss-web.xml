@@ -2,7 +2,7 @@
 <jboss-web>
     <context-root>/testecache</context-root>
     <disable-cross-context>false</disable-cross-context>
-    <security-domain>other</security-domain>
+    <security-domain>my-domain</security-domain>
 
     <security-role>
         <role-name>user</role-name>
