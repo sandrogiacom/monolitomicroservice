@@ -2,10 +2,11 @@
 <persistence version="2.0"
              xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    <persistence-unit name="PerformancePU" transaction-type="JTA">
-        <jta-data-source>java:jboss/datasources/PerformanceDS</jta-data-source>
+    <persistence-unit name="SessionPU" transaction-type="JTA">
+        <jta-data-source>java:jboss/datasources/SessionDS</jta-data-source>
 
         <class>com.monolitomicroservice.teste.sessionrest.persistence.SessionUser</class>
+        <class>com.monolitomicroservice.teste.sessionrest.persistence.SessionUserRole</class>
 
         <shared-cache-mode>NONE</shared-cache-mode>
 
@@ -15,8 +16,8 @@
             <!-- property name="hibernate.cache.use_query_cache" value="false" / -->
             <!-- property name="hibernate.cache.infinispan.statistics" value="false" / -->
 
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            <property name="hibernate.generate_statistics" value="false"/>
+            <property name="hibernate.hbm2ddl.auto" value=""/>
+            <property name="hibernate.generate_statistics" value="true"/>
             <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.show_sql" value="false"/>
         </properties>

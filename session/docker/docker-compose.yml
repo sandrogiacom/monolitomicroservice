@@ -1,0 +1,111 @@
+version: "3.0"
+
+services:
+  sessionmysql:
+    build:
+      context: './mysql'
+    image: session/mysql:latest
+    container_name: sessionmysql
+    hostname: sessionmysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'teste'
+    networks:
+      dcsession:
+        aliases:
+          - sessionmysql
+
+  sessioninfinispan:
+    build:
+      context: './infinispan'
+    image: session/infinispan:latest
+    container_name: sessioninfinispan
+    hostname: sessioninfinispan
+    networks:
+      dcsession:
+        aliases:
+          - sessioninfinispan
+
+  sessionserver:
+    build:
+      context: './server'
+    image: session/server:latest
+    container_name: sessionserver
+    hostname: sessionserver
+    depends_on:
+      - sessionmysql
+    links:
+      - sessionmysql
+    networks:
+      dcsession:
+        aliases:
+          - sessionserver
+    volumes:
+      - ../SessionServer/target:/opt/session
+
+  sessionserver11:
+    build:
+      context: './servercache'
+    image: session/server11:latest
+    container_name: sessionserver11
+    hostname: sessionserver11
+    depends_on:
+      - sessionmysql
+      - sessioninfinispan
+    links:
+      - sessionmysql
+      - sessioninfinispan
+    networks:
+      dcsession:
+        aliases:
+          - sessionserver11
+    volumes:
+      - ../SessionServerCache/target:/opt/server
+
+  sessionserver12:
+    build:
+      context: './servercache'
+    image: session/server12:latest
+    container_name: sessionserver12
+    hostname: sessionserver12
+    depends_on:
+      - sessionmysql
+      - sessioninfinispan
+    links:
+      - sessionmysql
+      - sessioninfinispan
+    networks:
+      dcsession:
+        aliases:
+          - sessionserver12
+    volumes:
+      - ../SessionServerCache/target:/opt/server
+
+  sessionha:
+    build:
+      context: './haproxy'
+    image: session/haproxy:latest
+    container_name: sessionha
+    hostname: sessionha
+    links:
+      - sessionserver
+      - sessionserver11
+      - sessionserver12
+    ports:
+      - "8080:8080"
+    networks:
+      dcsession:
+        aliases:
+          - sessionha
+    depends_on:
+      - sessionserver
+      - sessionserver11
+      - sessionserver12
+
+networks:
+  dcsession:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/16
