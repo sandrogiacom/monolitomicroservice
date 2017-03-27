@@ -18,5 +18,7 @@
         <module>SessionServer</module>
         <module>SessionServerCache</module>
         <module>SessionJPA</module>
+        <module>SessionEJBInterface</module>
+        <module>SessionEJBImpl</module>
     </modules>
 </project>

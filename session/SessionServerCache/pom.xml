@@ -128,5 +128,15 @@
             <artifactId>SessionJPA</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionEJBInterface</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionEJBImpl</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -6,11 +6,11 @@ LABEL description="Servidor Session" version="8"
 RUN /opt/jboss/wildfly/bin/add-user.sh admin totvs@123 --silent
 RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user,admin admin totvs@123 --silent
 RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user user --silent
-RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user01 user01 --silent
-RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user02 user02 --silent
-RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user03 user03 --silent
-RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user04 user04 --silent
-RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user05 user05 --silent
+RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user1 user1 --silent
+RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user2 user2 --silent
+RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user3 user3 --silent
+RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user4 user4 --silent
+RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user5 user5 --silent
 
 RUN mkdir -p /opt/jboss/wildfly/modules/com/mysql/main
 

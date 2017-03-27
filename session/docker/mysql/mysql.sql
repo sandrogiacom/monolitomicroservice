@@ -15,15 +15,15 @@ CREATE TABLE session_user_role (
 );
 
 INSERT INTO session_user (login, password, full_name) VALUES ('admin', 'admin', 'Administrador');
-INSERT INTO session_user (login, password, full_name) VALUES ('user01', 'user01', 'Usuario 01');
-INSERT INTO session_user (login, password, full_name) VALUES ('user02', 'user02', 'Usuario 02');
-INSERT INTO session_user (login, password, full_name) VALUES ('user03', 'user03', 'Usuario 03');
-INSERT INTO session_user (login, password, full_name) VALUES ('user04', 'user04', 'Usuario 04');
-INSERT INTO session_user (login, password, full_name) VALUES ('user05', 'user05', 'Usuario 05');
+INSERT INTO session_user (login, password, full_name) VALUES ('user1', 'user1', 'Usuario 01');
+INSERT INTO session_user (login, password, full_name) VALUES ('user2', 'user2', 'Usuario 02');
+INSERT INTO session_user (login, password, full_name) VALUES ('user3', 'user3', 'Usuario 03');
+INSERT INTO session_user (login, password, full_name) VALUES ('user4', 'user4', 'Usuario 04');
+INSERT INTO session_user (login, password, full_name) VALUES ('user5', 'user5', 'Usuario 05');
 INSERT INTO session_user_role (login, role_code) VALUES ('admin', 'admin');
 INSERT INTO session_user_role (login, role_code) VALUES ('admin', 'user');
-INSERT INTO session_user_role (login, role_code) VALUES ('user01', 'user');
-INSERT INTO session_user_role (login, role_code) VALUES ('user02', 'user');
-INSERT INTO session_user_role (login, role_code) VALUES ('user03', 'user');
-INSERT INTO session_user_role (login, role_code) VALUES ('user04', 'user');
-INSERT INTO session_user_role (login, role_code) VALUES ('user05', 'user');
+INSERT INTO session_user_role (login, role_code) VALUES ('user1', 'user');
+INSERT INTO session_user_role (login, role_code) VALUES ('user2', 'user');
+INSERT INTO session_user_role (login, role_code) VALUES ('user3', 'user');
+INSERT INTO session_user_role (login, role_code) VALUES ('user4', 'user');
+INSERT INTO session_user_role (login, role_code) VALUES ('user5', 'user');

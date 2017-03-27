@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monolitomicroservice.teste.performance.common.CallResult;
 import com.monolitomicroservice.teste.performance.common.RestResult;
 import com.monolitomicroservice.teste.performance.common.UserVO;
-import com.monolitomicroservice.teste.performance.service.UserService;
+import com.monolitomicroservice.teste.session.service.UserService;
 
 @MessageDriven(name = "UserQueue", activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "/jms/queue/UserQueue"),
