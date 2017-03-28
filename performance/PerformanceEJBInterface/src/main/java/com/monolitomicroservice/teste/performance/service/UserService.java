@@ -1,4 +1,4 @@
-package com.monolitomicroservice.teste.session.service;
+package com.monolitomicroservice.teste.performance.service;
 
 import javax.ejb.Remote;
 

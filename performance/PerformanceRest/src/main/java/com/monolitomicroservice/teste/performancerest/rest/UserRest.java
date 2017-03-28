@@ -1,4 +1,4 @@
-package com.monolitomicroservice.teste.sessionrest.rest;
+package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;

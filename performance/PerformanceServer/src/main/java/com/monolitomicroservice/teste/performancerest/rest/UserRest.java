@@ -1,4 +1,4 @@
-package com.monolitomicroservice.teste.sessionrest.rest;
+package com.monolitomicroservice.teste.performancerest.rest;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import com.monolitomicroservice.teste.performance.common.CallResult;
 import com.monolitomicroservice.teste.performance.common.RestResult;
 import com.monolitomicroservice.teste.performance.common.UserVO;
-import com.monolitomicroservice.teste.session.service.UserService;
+import com.monolitomicroservice.teste.performance.service.UserService;
 
 @Path("/users")
 public class UserRest {

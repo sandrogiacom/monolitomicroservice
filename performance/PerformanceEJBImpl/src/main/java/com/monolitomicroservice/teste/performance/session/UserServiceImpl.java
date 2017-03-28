@@ -1,4 +1,4 @@
-package com.monolitomicroservice.teste.session.service;
+package com.monolitomicroservice.teste.performance.session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import javax.persistence.TypedQuery;
 
 import com.monolitomicroservice.teste.performance.common.CallResult;
 import com.monolitomicroservice.teste.performance.common.UserVO;
+import com.monolitomicroservice.teste.performance.service.UserService;
 import com.monolitomicroservice.teste.performancerest.persistence.TSTUser;
 
 @Stateless(name = "UserService", mappedName = "service/UserService")
