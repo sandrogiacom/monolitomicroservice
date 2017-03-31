@@ -7,7 +7,7 @@
     </head>
 
     <body>
-        <form id="jsecurity" name="jsecurity" action="j_security_check" method="post" role="form">
+        <form method="post" action='<%= response.encodeURL("j_security_check") %>'>
             <table>
                 <tr>
                     <th>Login:</th>

@@ -26,6 +26,23 @@ services:
         aliases:
           - sessioninfinispan
 
+  sessionejbserver:
+    build:
+      context: './serverejb'
+    image: session/ejbserver:latest
+    container_name: sessionejbserver
+    hostname: sessionejbserver
+    depends_on:
+      - sessionmysql
+    links:
+      - sessionmysql
+    networks:
+      dcsession:
+        aliases:
+          - sessionejbserver
+    volumes:
+      - ../SessionEJBServer/target:/opt/session
+
   sessionserver:
     build:
       context: './server'
@@ -52,9 +69,11 @@ services:
     depends_on:
       - sessionmysql
       - sessioninfinispan
+      - sessionejbserver
     links:
       - sessionmysql
       - sessioninfinispan
+      - sessionejbserver
     networks:
       dcsession:
         aliases:
@@ -71,9 +90,11 @@ services:
     depends_on:
       - sessionmysql
       - sessioninfinispan
+      - sessionejbserver
     links:
       - sessionmysql
       - sessioninfinispan
+      - sessionejbserver
     networks:
       dcsession:
         aliases:

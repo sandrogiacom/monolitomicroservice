@@ -8,12 +8,10 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-@Stateless(name = "UserService", mappedName = "service/UserService")
+//@Stateless(name = "UserService", mappedName = "service/UserService")
+@Stateless
 public class UserServiceImpl implements UserService {
     private static final Logger log = Logger.getLogger(UserService.class.getName());
-
-    //@PersistenceContext(unitName = "SessionPU")
-    //private EntityManager em;
 
     @Resource
     private SessionContext context;

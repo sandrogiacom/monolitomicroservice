@@ -1,7 +1,7 @@
 FROM jboss/wildfly:10.1.0.Final
 
 MAINTAINER Vanei
-LABEL description="Servidor Session" version="8"
+LABEL description="Servidor Session EJB" version="8"
 
 RUN /opt/jboss/wildfly/bin/add-user.sh admin totvs@123 --silent
 RUN /opt/jboss/wildfly/bin/add-user.sh -g user,admin ejb test --silent

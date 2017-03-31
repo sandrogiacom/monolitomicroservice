@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.teste.monolitomicroservice</groupId>
+    <artifactId>SessionEJBServer</artifactId>
+    <name>Monolito To Microservice : Session : EJB Server</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>ear</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <finalName>SessionEJBServer</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <version>6</version>
+                    <applicationName>sessionserverejb</applicationName>
+                    <generateModuleId>false</generateModuleId>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <initializeInOrder>true</initializeInOrder>
+                    <security>
+                        <security-role>
+                            <role-name>admin</role-name>
+                        </security-role>
+                        <security-role>
+                            <role-name>user</role-name>
+                        </security-role>
+                    </security>
+                    <modules>
+                        <ejbModule>
+                            <groupId>com.teste.monolitomicroservice</groupId>
+                            <artifactId>SessionEJBImpl</artifactId>
+                            <bundleFileName>SessionEJBImpl.jar</bundleFileName>
+                        </ejbModule>
+                        <webModule>
+                            <groupId>com.teste.monolitomicroservice</groupId>
+                            <artifactId>SessionWebFake</artifactId>
+                            <bundleFileName>SessionWebFake.war</bundleFileName>
+                            <contextRoot>/fake</contextRoot>
+                        </webModule>
+                    </modules>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <!--
+                        <manifestEntries>
+                            <Dependencies>org.jboss.xnio</Dependencies>
+                        </manifestEntries>
+                        -->
+                        <manifest>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Java EE 7 dependency -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionJPA</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionEJBInterface</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionEJBImpl</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionWebFake</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+</project>

@@ -58,7 +58,7 @@ public class SessionRest {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/put")
-    public RestResult pub(@QueryParam("key") String key,
+    public RestResult put(@QueryParam("key") String key,
             @QueryParam("value") String value) throws Exception {
         long init = System.currentTimeMillis();
         log.fine("==== put: key=" + key + ", value=" + value);

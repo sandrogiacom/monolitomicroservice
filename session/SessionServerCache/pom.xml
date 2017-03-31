@@ -30,35 +30,20 @@
 
     <build>
         <finalName>SessionServerCache</finalName>
-        <!--
         <plugins>
             <plugin>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>wildfly-swarm-plugin</artifactId>
-                <version>${version.wildfly.swarm}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <bundleDependencies>true</bundleDependencies>
-                    <properties>
-                        <swarm.http.port>8080</swarm.http.port>
-                        <swarm.management.bind.address>0.0.0.0</swarm.management.bind.address>
-                        <swarm.context.path>/testecache</swarm.context.path>
-                        <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-                        <swarm.ds.name>SessionDS</swarm.ds.name>
-                        <swarm.ds.username>root</swarm.ds.username>
-                        <swarm.ds.password>root</swarm.ds.password>
-                        <swarm.ds.connection.url>jdbc:mysql://sessionmysql/teste</swarm.ds.connection.url>
-                    </properties>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <archive>
+                        <manifestEntries>
+                            <Dependencies>org.jboss.xnio, org.jboss.ejb-client, org.jboss.remote-naming</Dependencies>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>package</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
-        -->
     </build>
 
     <dependencies>
@@ -70,58 +55,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- WildFly Swarm Fractions -->
-        <!--
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs</artifactId>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb-client</artifactId>
+            <version>2.1.4.Final</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jaxrs-cdi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>transactions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>cdi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>management</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>infinispan</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jgroups</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>datasources</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.26</version>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
@@ -131,11 +70,6 @@
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
             <artifactId>SessionEJBInterface</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>SessionEJBImpl</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
