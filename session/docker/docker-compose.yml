@@ -49,6 +49,8 @@ services:
     image: session/server:latest
     container_name: sessionserver
     hostname: sessionserver
+    ports:
+      - "8787:8787"
     depends_on:
       - sessionmysql
     links:

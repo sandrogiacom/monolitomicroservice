@@ -21,7 +21,5 @@
         <module>SessionEJBInterface</module>
         <module>SessionEJBImpl</module>
         <module>SessionEJBServer</module>
-        <module>SessionWebFake</module>
-        <module>SessionClient</module>
     </modules>
 </project>
