@@ -49,8 +49,6 @@ services:
     image: session/server:latest
     container_name: sessionserver
     hostname: sessionserver
-    ports:
-      - "8787:8787"
     depends_on:
       - sessionmysql
     links:
@@ -103,6 +101,23 @@ services:
           - sessionserver12
     volumes:
       - ../SessionServerCache/target:/opt/server
+
+  sessionserverjwt:
+    build:
+      context: './serverjwt'
+    image: session/serverjwt:latest
+    container_name: sessionserverjwt
+    hostname: sessionserverjwt
+    depends_on:
+      - sessionmysql
+    links:
+      - sessionmysql
+    networks:
+      dcsession:
+        aliases:
+          - sessionserverjwt
+    volumes:
+      - ../SessionServerJWT/target:/opt/server
 
   sessionha:
     build:

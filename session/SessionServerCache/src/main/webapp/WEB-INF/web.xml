@@ -3,6 +3,15 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <distributable/>
 
+    <login-config>
+        <!-- auth-method>FORM</auth-method -->
+        <realm-name>my-domain</realm-name>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/loginfail.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
     <security-constraint>
         <display-name>Protected Rest</display-name>
         <web-resource-collection>
@@ -28,15 +37,6 @@
             <role-name>user</role-name>
         </auth-constraint>
     </security-constraint>
-
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>my-domain</realm-name>
-        <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/loginfail.jsp</form-error-page>
-        </form-login-config>
-    </login-config>
     <security-role>
         <role-name>user</role-name>
     </security-role>

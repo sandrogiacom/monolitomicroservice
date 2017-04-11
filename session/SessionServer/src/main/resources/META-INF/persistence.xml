@@ -5,8 +5,8 @@
     <persistence-unit name="SessionPU" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/SessionDS</jta-data-source>
 
-        <class>com.monolitomicroservice.teste.sessionrest.persistence.SessionUser</class>
-        <class>com.monolitomicroservice.teste.sessionrest.persistence.SessionUserRole</class>
+        <class>com.monolitomicroservice.teste.userjpa.persistence.CommonUser</class>
+        <class>com.monolitomicroservice.teste.userjpa.persistence.CommonUserRole</class>
 
         <shared-cache-mode>NONE</shared-cache-mode>
 

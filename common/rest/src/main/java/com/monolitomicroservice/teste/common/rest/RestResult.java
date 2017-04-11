@@ -1,4 +1,4 @@
-package com.monolitomicroservice.teste.sessionrest.rest;
+package com.monolitomicroservice.teste.common.rest;
 
 import java.io.Serializable;
 

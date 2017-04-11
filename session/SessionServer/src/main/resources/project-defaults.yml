@@ -26,7 +26,7 @@ swarm:
               module-options:
                 dsJndiName: java:jboss/datasources/SessionDS
                 principalsQuery: SELECT password FROM session_user WHERE login=?
-                rolesQuery: SELECT role_code, 'Roles' FROM session_user_role WHERE login=?
+                rolesQuery: SELECT role_code, 'Roles' FROM common_user_role WHERE login=?
   datasources:
     data-sources:
       SessionDS:

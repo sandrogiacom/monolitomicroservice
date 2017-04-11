@@ -56,6 +56,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-files-on-build</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../../resources/</directory>
+                                    <include>wait-for-it.sh</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -120,7 +143,7 @@
 
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
-            <artifactId>SessionJPA</artifactId>
+            <artifactId>CommonUserJPA</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -131,6 +154,16 @@
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
             <artifactId>SessionEJBImpl</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>CommonRest</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>SessionRest</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
