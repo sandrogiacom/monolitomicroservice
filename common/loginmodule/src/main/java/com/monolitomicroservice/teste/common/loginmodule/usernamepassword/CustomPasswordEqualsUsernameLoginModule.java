@@ -1,40 +1,20 @@
 package com.monolitomicroservice.teste.common.loginmodule.usernamepassword;
 
-import java.security.Principal;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Logger;
 
-import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
 
-import com.monolitomicroservice.teste.common.loginmodule.CustomGroup;
-import com.monolitomicroservice.teste.common.loginmodule.CustomPrincipal;
+import com.monolitomicroservice.teste.common.loginmodule.AbstractLoginModule;
 
-public class CustomPasswordEqualsUsernameLoginModule implements LoginModule {
+public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule {
     private static final Logger log = Logger.getLogger(CustomPasswordEqualsUsernameLoginModule.class.getName());
 
-    private CallbackHandler callbackHandler = null;
-    private boolean authenticated = false;
-    private Subject subject;
-    private Map sharedState;
-    private Map<String, ?> options;
-    private boolean committed = false;
-
-    @Override
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
-        log.info("BEGIN - initialize");
-        log.info("initialize - subject=" + subject);
-        this.callbackHandler = callbackHandler;
-        this.subject = subject;
-        this.options = options;
-        this.sharedState = sharedState;
-        log.info("END - initialize");
-    }
+    private List<String> roles;
+    private String principal;
 
     @Override
     public boolean login() throws LoginException {
@@ -64,15 +44,10 @@ public class CustomPasswordEqualsUsernameLoginModule implements LoginModule {
         if (username.equals(password)) {
             log.info("login - Credentials verified!!");
 
-            Principal principal = new CustomPrincipal(username);
-            subject.getPrincipals().add(principal);
-            CustomGroup roles = new CustomGroup("Roles");
-            subject.getPrincipals().add(roles);
-            CustomGroup user = new CustomGroup("user");
-            roles.addMember(user);
+            this.principal = username;
+            this.roles.add("user");
             if (username.equals("admin")) {
-                CustomGroup admin = new CustomGroup("admin");
-                roles.addMember(admin);
+                roles.add("admin");
             }
             this.sharedState.put("j_username", username);
             this.sharedState.put("j_password", password);
@@ -82,36 +57,18 @@ public class CustomPasswordEqualsUsernameLoginModule implements LoginModule {
         } else {
             result = false;
         }
-        authenticated = result;
         log.info("END - login - result=" + result);
 
         return result;
     }
 
     @Override
-    public boolean commit() throws LoginException {
-        log.info("commit");
-        if (!authenticated) {
-            return false;
-        } else {
-            committed = true;
-        }
-        return true;
+    protected List<String> getRoles() {
+        return this.roles;
     }
 
     @Override
-    public boolean abort() throws LoginException {
-        log.info("abort");
-        authenticated = false;
-        committed = false;
-        return false;
-    }
-
-    @Override
-    public boolean logout() throws LoginException {
-        log.info("logout");
-        authenticated = false;
-        committed = false;
-        return false;
+    protected String getIdentity() {
+        return this.principal;
     }
 }

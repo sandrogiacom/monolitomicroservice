@@ -1,10 +1,11 @@
 package com.monolitomicroservice.teste.common.loginmodule.database;
 
-import java.security.Principal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -17,34 +18,23 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
 import javax.sql.DataSource;
 
-import com.monolitomicroservice.teste.common.loginmodule.CustomGroup;
-import com.monolitomicroservice.teste.common.loginmodule.CustomPrincipal;
+import com.monolitomicroservice.teste.common.loginmodule.AbstractLoginModule;
 
-public class CustomDatabaseLoginModule implements LoginModule {
+public class CustomDatabaseLoginModule extends AbstractLoginModule {
     private static final Logger log = Logger.getLogger(CustomDatabaseLoginModule.class.getName());
-
-    private CallbackHandler callbackHandler = null;
-    private boolean authenticated = false;
-    private Subject subject;
-    private Map sharedState;
-    private Map<String, ?> options;
-    private boolean committed = false;
 
     protected String dsJndiName;
     protected String principalsQuery = "SELECT password FROM common_user WHERE login = ?";
     protected String rolesQuery = "SELECT role_code, 'Roles' FROM common_user_role WHERE login = ?";
 
+    private List<String> roles;
+    private String principal;
+
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
-        log.info("BEGIN - initialize");
-        log.info("initialize - subject=" + subject);
-        this.callbackHandler = callbackHandler;
-        this.subject = subject;
-        this.options = options;
-        this.sharedState = sharedState;
+        super.initialize(subject, callbackHandler, sharedState, options);
 
         this.dsJndiName = options.get("dsJndiName").toString();
         if (options.get("principalsQuery") != null) {
@@ -53,8 +43,6 @@ public class CustomDatabaseLoginModule implements LoginModule {
         if (options.get("rolesQuery") != null) {
             rolesQuery = options.get("rolesQuery").toString();
         }
-
-        log.info("END - initialize");
     }
 
     @Override
@@ -105,17 +93,14 @@ public class CustomDatabaseLoginModule implements LoginModule {
                 }
                 if (result) {
                     log.info("login - Credentials verified!!");
-                    Principal principal = new CustomPrincipal(username);
-                    subject.getPrincipals().add(principal);
-                    CustomGroup roles = new CustomGroup("Roles");
-                    subject.getPrincipals().add(roles);
+                    this.principal = username;
+                    this.roles = new LinkedList<>();
 
                     try (PreparedStatement ps = conn.prepareStatement(rolesQuery)) {
                         ps.setString(1, username);
                         try (ResultSet rs = ps.executeQuery()) {
                             while (rs.next()) {
-                                CustomGroup role = new CustomGroup(rs.getString(1));
-                                roles.addMember(role);
+                                this.roles.add(rs.getString(1));
                             }
                         }
                     }
@@ -140,29 +125,12 @@ public class CustomDatabaseLoginModule implements LoginModule {
     }
 
     @Override
-    public boolean commit() throws LoginException {
-        log.info("commit");
-        if (!authenticated) {
-            return false;
-        } else {
-            committed = true;
-        }
-        return true;
+    protected List<String> getRoles() {
+        return this.roles;
     }
 
     @Override
-    public boolean abort() throws LoginException {
-        log.info("abort");
-        authenticated = false;
-        committed = false;
-        return false;
-    }
-
-    @Override
-    public boolean logout() throws LoginException {
-        log.info("logout");
-        authenticated = false;
-        committed = false;
-        return false;
+    protected String getIdentity() {
+        return this.principal;
     }
 }

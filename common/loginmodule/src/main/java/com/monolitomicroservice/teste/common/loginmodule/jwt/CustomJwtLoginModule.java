@@ -1,9 +1,10 @@
 package com.monolitomicroservice.teste.common.loginmodule.jwt;
 
 import java.io.IOException;
-import java.security.Principal;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,18 +13,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.CredentialExpiredException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
+import javax.security.jacc.PolicyContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.monolitomicroservice.teste.common.loginmodule.CustomGroup;
-import com.monolitomicroservice.teste.common.loginmodule.CustomPrincipal;
+import com.monolitomicroservice.teste.common.loginmodule.AbstractLoginModule;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,39 +32,37 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
-public class CustomJwtLoginModule implements LoginModule {
+public class CustomJwtLoginModule extends AbstractLoginModule {
     private static final Logger log = Logger.getLogger(CustomJwtLoginModule.class.getName());
 
-    private CallbackHandler callbackHandler = null;
-    private Subject subject;
-    private Map sharedState;
-    private Map<String, ?> options;
-    //private boolean committed = false;
-    //private boolean authenticated = false;
-
-    private Principal identity;
-    private Principal group;
-
-    @Override
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
-        log.info("BEGIN - initialize");
-        log.info("initialize - subject=" + subject);
-        this.callbackHandler = callbackHandler;
-        this.subject = subject;
-        this.options = options;
-        this.sharedState = sharedState;
-        log.info("END - initialize");
-    }
+    private List<String> roles;
+    private String principal;
 
     @Override
     public boolean login() throws LoginException {
         log.info("BEGIN - login");
         log.info("login - _logged_=" + this.sharedState.get("_logged_"));
+
+        HttpServletRequest request = null;
+        HttpServletResponse response = null;
+
+        try {
+            log.info("#### ::: login - 1");
+            request = (HttpServletRequest) PolicyContext.getContext("javax.servlet.http.HttpServletRequest");
+            log.info("::: login - 2::: request=" + request);
+            response = (HttpServletResponse) PolicyContext.getContext("javax.servlet.http.HttpServletResponse");
+            log.info("::: login - 3::: response=" + response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        log.info("#### ::: login - 4");
+
+        boolean result = false;
+
         if (this.sharedState.get("_logged_") != null && this.sharedState.get("_logged_").toString().equalsIgnoreCase("true")) {
             log.info("login - abortando checagem");
-            return true;
+            result = true;
         }
-        boolean result = false;
         String jwt = getJwt();
 
         if (jwt != null) {
@@ -81,13 +79,19 @@ public class CustomJwtLoginModule implements LoginModule {
                 // now we can trust its information...
                 String user = jws.getBody().getSubject();
                 log.info("login - JWT provided - 4 - " + user);
-                identity = new CustomPrincipal(user);
-                log.info("login - JWT provided - 5 - " + identity);
+                principal = user;
+                //identity = new CustomPrincipal(user);
+                log.info("login - JWT provided - 5 - " + principal);
 
                 String role = (String) jws.getBody().get("role");
                 log.info("login - JWT provided - 6 - " + role);
-                group = new CustomPrincipal(role);
-                log.info("login - JWT provided - 7 - " + group);
+                roles = new ArrayList<>();
+                StringTokenizer st = new StringTokenizer(role, ",");
+                while (st.hasMoreTokens()) {
+                    roles.add(st.nextToken());
+                }
+                //group = new CustomPrincipal(role);
+                log.info("login - JWT provided - 7 - " + roles);
 
                 log.info("login - JWT is valid, logging in user " + user + " with role " + role);
 
@@ -106,31 +110,13 @@ public class CustomJwtLoginModule implements LoginModule {
     }
 
     @Override
-    public boolean commit() throws LoginException {
-        Set<Principal> principals = subject.getPrincipals();
-        principals.add(identity);
-
-        CustomGroup roles = new CustomGroup("Roles");
-        roles.addMember(group);
-        principals.add(roles);
-
-        return true;
+    protected List<String> getRoles() {
+        return this.roles;
     }
 
     @Override
-    public boolean abort() throws LoginException {
-        log.info("abort");
-        identity = null;
-        group = null;
-        return true;
-    }
-
-    @Override
-    public boolean logout() throws LoginException {
-        log.info("logout");
-        identity = null;
-        group = null;
-        return true;
+    protected String getIdentity() {
+        return this.principal;
     }
 
     private String getJwt() throws LoginException {
