@@ -34,19 +34,13 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.teste.monolitomicroservice</groupId>
-                                    <artifactId>CommonLoginModule</artifactId>
+                                    <artifactId>MonoliToMicroserviceWildflySecurityCommon</artifactId>
                                     <version>1.0.0-SNAPSHOT</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/../docker/serverjwt/</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>mysql</groupId>
-                                    <artifactId>mysql-connector-java</artifactId>
-                                    <version>5.1.26</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/../docker/serverjwt/</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/common/main
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>io.jsonwebtoken</groupId>
@@ -54,7 +48,52 @@
                                     <version>0.7.0</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/../docker/serverjwt/</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/common/main
+                                    </outputDirectory>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.teste.monolitomicroservice</groupId>
+                                    <artifactId>MonoliToMicroserviceWildflySecurityLoginModule</artifactId>
+                                    <version>1.0.0-SNAPSHOT</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>
+                                        ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/loginmodule/main
+                                    </outputDirectory>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.teste.monolitomicroservice</groupId>
+                                    <artifactId>MonoliToMicroserviceWildflySecurityMechanism</artifactId>
+                                    <version>1.0.0-SNAPSHOT</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>
+                                        ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/mechanism/main
+                                    </outputDirectory>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>com.teste.monolitomicroservice</groupId>
+                                    <artifactId>MonoliToMicroserviceWildflyExtension</artifactId>
+                                    <version>1.0.0-SNAPSHOT</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>
+                                        ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/extension/custom/main
+                                    </outputDirectory>
+                                </artifactItem>
+
+                                <artifactItem>
+                                    <groupId>mysql</groupId>
+                                    <artifactId>mysql-connector-java</artifactId>
+                                    <version>5.1.26</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.basedir}/../docker/serverjwt/modules/com/mysql/main
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -66,7 +105,7 @@
                 <version>3.0.2</version>
                 <executions>
                     <execution>
-                        <id>copy-files-on-build</id>
+                        <id>copy-wait-for-it</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -77,6 +116,91 @@
                                 <resource>
                                     <directory>${project.basedir}/../../resources/</directory>
                                     <include>wait-for-it.sh</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-module-common</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/common/main/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../../wildfly/security/common/src/main/resources/
+                                    </directory>
+                                    <include>*</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-module-loginmodule</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/loginmodule/main/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>
+                                        ${project.basedir}/../../wildfly/security/loginmodule/src/main/resources/
+                                    </directory>
+                                    <include>*</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-module-mechanism</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/security/mechanism/main/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../../wildfly/security/mechanism/src/main/resources/
+                                    </directory>
+                                    <include>*</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-module-extension</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.basedir}/../docker/serverjwt/modules/com/teste/monolitomicroservice/extension/custom/main/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../../wildfly/extension/src/main/resources/
+                                    </directory>
+                                    <include>*</include>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -101,6 +225,11 @@
             <version>5.1.26</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.teste.monolitomicroservice</groupId>
+            <artifactId>MonoliToMicroserviceWildflySecurityCommon</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.teste.monolitomicroservice</groupId>
             <artifactId>CommonUserJPA</artifactId>

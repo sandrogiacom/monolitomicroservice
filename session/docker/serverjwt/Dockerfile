@@ -10,16 +10,19 @@ RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user ejb test --silent
 RUN /opt/jboss/wildfly/bin/add-user.sh -a -g user user1 user1 --silent
 
 RUN mkdir -p /opt/jboss/wildfly/modules/com/mysql/main
-RUN mkdir -p /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/auth/main
+RUN mkdir -p /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/common/main
+RUN mkdir -p /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/loginmodule/main
+RUN mkdir -p /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/mechanism/main
+RUN mkdir -p /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/extension/custom/main
 
 
 COPY startup.sh /startup.sh
 COPY standalone.xml /opt/jboss/wildfly/standalone/configuration/standalone.xml
-COPY mysql-module.xml /opt/jboss/wildfly/modules/com/mysql/main/module.xml
-COPY mysql-connector-java-5.1.26.jar /opt/jboss/wildfly/modules/com/mysql/main/mysql-connector-java-5.1.26.jar
-COPY auth-module.xml /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/auth/main/module.xml
-COPY CommonLoginModule-1.0.0-SNAPSHOT.jar /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/auth/main/CommonLoginModule.jar
-COPY jjwt-0.7.0.jar /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/auth/main/jjwt.jar
+COPY modules/com/mysql/main/* /opt/jboss/wildfly/modules/com/mysql/main/
+COPY modules/com/teste/monolitomicroservice/security/common/main/* /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/common/main/
+COPY modules/com/teste/monolitomicroservice/security/loginmodule/main/* /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/loginmodule/main/
+COPY modules/com/teste/monolitomicroservice/security/mechanism/main/* /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/security/mechanism/main/
+COPY modules/com/teste/monolitomicroservice/extension/custom/main/* /opt/jboss/wildfly/modules/com/teste/monolitomicroservice/extension/custom/main/
 
 WORKDIR /opt/session
 ENTRYPOINT /startup.sh

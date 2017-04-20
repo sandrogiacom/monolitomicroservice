@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.teste.monolitomicroservice</groupId>
-    <artifactId>MonoliToMicroserviceCommon</artifactId>
-    <name>Monolito To Microservice : Common</name>
+    <artifactId>MonoliToMicroserviceWildflySecurity</artifactId>
+    <name>Monolito To Microservice : Wildfly : Security</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -15,7 +15,8 @@
     </properties>
 
     <modules>
-        <module>userjpa</module>
-        <module>rest</module>
+        <module>common</module>
+        <module>loginmodule</module>
+        <module>mechanism</module>
     </modules>
 </project>

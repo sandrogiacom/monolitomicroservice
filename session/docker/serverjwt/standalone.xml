@@ -31,6 +31,7 @@
         <extension module="org.wildfly.extension.request-controller"/>
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
+        <extension module="com.teste.monolitomicroservice.extension.custom"/>
     </extensions>
     <management>
         <security-realms>
@@ -384,21 +385,25 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:security:1.2">
             <security-domains>
-                <security-domain name="my-domain" cache-type="default">
+                <!-- security-domain name="my-domain" cache-type="default" -->
+                <security-domain name="my-domain">
                     <authentication>
                         <login-module
-                                code="com.monolitomicroservice.teste.common.loginmodule.database.CustomDatabaseLoginModule"
-                                module="com.teste.monolitomicroservice.auth"
+                                code="com.monolitomicroservice.teste.wildfly.security.loginmodule.database.CustomDatabaseLoginModule"
+                                module="com.teste.monolitomicroservice.security.loginmodule"
                                 flag="optional">
                             <module-option name="dsJndiName" value="java:jboss/datasources/SessionDS"/>
                             <module-option name="principalsQuery"
                                            value="SELECT password FROM common_user WHERE login = ?"/>
                             <module-option name="rolesQuery"
                                            value="SELECT role_code, 'Roles' FROM common_user_role WHERE login=?"/>
+                            <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
-                        <login-module code="com.monolitomicroservice.teste.common.loginmodule.jwt.CustomJwtLoginModule"
-                                      module="com.teste.monolitomicroservice.auth"
-                                      flag="optional">
+                        <login-module
+                                code="com.monolitomicroservice.teste.wildfly.security.loginmodule.jwt.CustomJwtLoginModule"
+                                module="com.teste.monolitomicroservice.security.loginmodule"
+                                flag="required">
+                            <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
                     </authentication>
                 </security-domain>
@@ -485,6 +490,7 @@
             <client-config name="Standard-Client-Config"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
+        <subsystem xmlns="urn:com.teste.monolitomicroservice.extension.custom:1.0"/>
     </profile>
     <interfaces>
         <interface name="management">

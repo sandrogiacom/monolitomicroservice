@@ -3,6 +3,24 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <distributable/>
 
+    <filter>
+        <filter-name>JWT</filter-name>
+        <filter-class>com.monolitomicroservice.teste.wildfly.security.common.jwt.JwtAuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>JWT</filter-name>
+        <url-pattern>/rest/p/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>JWT</filter-name>
+        <url-pattern>/p/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>JWT</filter-name>
+        <url-pattern>/login</url-pattern>
+    </filter-mapping>
+
+    <!--
     <security-constraint>
         <display-name>Protected Rest</display-name>
         <web-resource-collection>
@@ -28,9 +46,22 @@
             <role-name>user</role-name>
         </auth-constraint>
     </security-constraint>
+    -->
+    <security-constraint>
+        <display-name>Protected</display-name>
+        <web-resource-collection>
+            <web-resource-name>Protected</web-resource-name>
+            <description>Protected</description>
+            <url-pattern>/_fake</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>Protected</description>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
 
     <login-config>
-        <!-- auth-method>FORM</auth-method -->
+        <auth-method>FORM,CUSTOMAUTH</auth-method>
         <realm-name>my-domain</realm-name>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
