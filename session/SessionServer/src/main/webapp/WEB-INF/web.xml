@@ -32,6 +32,12 @@
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>my-domain</realm-name>
+
+        <!--
+        <realm-name>other</realm-name>
+        <auth-method>BASIC</auth-method>
+        -->
+
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
             <form-error-page>/loginfail.jsp</form-error-page>

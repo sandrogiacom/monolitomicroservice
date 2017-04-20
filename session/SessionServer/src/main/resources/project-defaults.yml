@@ -1,20 +1,21 @@
 swarm:
-  deployment:
-    example-jaas-form.war:
-      web:
-        login-config:
-          auth-method: FORM
-          form-login-config:
-            form-login-page: /login.jsp
-            form-error-page: /login_error.jsp
-          security-domain: my-domain
-        security-constraints:
-          - url-pattern: /p/*
-            methods: [GET, POST, PUT]
-            roles: user
-          - url-pattern: /rest/p/*
-            methods: [GET, POST, PUT]
-            roles: user
+#  deployment:
+#    SessionServer.war:
+#      web:
+#        login-config:
+#          auth-method: FORM
+#          realm-name: my-domain
+#          form-login-config:
+#            form-login-page: /login.jsp
+#            form-error-page: /login_error.jsp
+##          security-domain: my-domain
+#        security-constraints:
+#          - url-pattern: /p/*
+#            methods: [GET, POST, PUT]
+#            roles: user
+#          - url-pattern: /rest/p/*
+#            methods: [GET, POST, PUT]
+#            roles: user
   security:
     security-domains:
       my-domain:
@@ -25,7 +26,7 @@ swarm:
               flag: required
               module-options:
                 dsJndiName: java:jboss/datasources/SessionDS
-                principalsQuery: SELECT password FROM session_user WHERE login=?
+                principalsQuery: SELECT password FROM common_user WHERE login=?
                 rolesQuery: SELECT role_code, 'Roles' FROM common_user_role WHERE login=?
   datasources:
     data-sources:
