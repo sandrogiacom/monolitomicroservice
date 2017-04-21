@@ -1,14 +1,5 @@
 package com.monolitomicroservice.teste.wildfly.security.common.jwt;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -18,6 +9,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.impl.crypto.MacProvider;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
+import javax.crypto.SecretKey;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.http.HttpServletRequest;
 
 @ApplicationScoped
 public class JwtManager {
@@ -37,6 +35,9 @@ public class JwtManager {
      * Builds a JWT with the given subject and role and returns it as a JWS signed compact String.
      */
     public String createToken(final String subject, final String role) {
+        System.out.println("********************** createToken(subject=" + subject + ", role=" + role + ")");
+        System.out.println("********************** createToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
+                + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
         final Instant now = Instant.now();
         final Date expiryDate = Date.from(now.plus(TOKEN_VALIDITY));
         return Jwts.builder()
@@ -58,6 +59,9 @@ public class JwtManager {
             MalformedJwtException,
             SignatureException,
             IllegalArgumentException {
+        System.out.println("********************** parseToken(compactToken=" + compactToken + ")");
+        System.out.println("********************** parseToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
+                + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(compactToken);
