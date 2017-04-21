@@ -102,12 +102,12 @@ services:
     volumes:
       - ../SessionServerCache/target:/opt/server
 
-  sessionserverjwt:
+  sessionserverjwt1:
     build:
       context: './serverjwt'
     image: session/serverjwt:latest
-    container_name: sessionserverjwt
-    hostname: sessionserverjwt
+    container_name: sessionserverjwt1
+    hostname: sessionserverjwt1
     depends_on:
       - sessionmysql
     links:
@@ -115,7 +115,24 @@ services:
     networks:
       dcsession:
         aliases:
-          - sessionserverjwt
+          - sessionserverjwt1
+    volumes:
+      - ../SessionServerJWT/target:/opt/server
+
+  sessionserverjwt2:
+    build:
+      context: './serverjwt'
+    image: session/serverjwt:latest
+    container_name: sessionserverjwt2
+    hostname: sessionserverjwt2
+    depends_on:
+      - sessionmysql
+    links:
+      - sessionmysql
+    networks:
+      dcsession:
+        aliases:
+          - sessionserverjwt2
     volumes:
       - ../SessionServerJWT/target:/opt/server
 
@@ -129,6 +146,8 @@ services:
       - sessionserver
       - sessionserver11
       - sessionserver12
+      - sessionserverjwt1
+      - sessionserverjwt2
     ports:
       - "8080:8080"
     networks:
@@ -139,6 +158,8 @@ services:
       - sessionserver
       - sessionserver11
       - sessionserver12
+      - sessionserverjwt1
+      - sessionserverjwt2
 
 networks:
   dcsession:
