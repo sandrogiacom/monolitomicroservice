@@ -4,8 +4,8 @@
     <distributable/>
 
     <login-config>
-        <!-- auth-method>FORM</auth-method -->
-        <auth-method>BASIC</auth-method>
+        <auth-method>FORM</auth-method>
+        <!-- auth-method>BASIC</auth-method -->
         <realm-name>my-domain</realm-name>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
