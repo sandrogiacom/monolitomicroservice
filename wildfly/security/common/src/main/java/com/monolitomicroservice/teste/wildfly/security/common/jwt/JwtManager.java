@@ -8,12 +8,12 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,8 +22,30 @@ public class JwtManager {
 
     private static final String CLAIM_ROLE = "role";
 
+    private static final byte[] ENCODED = new byte[]{-108, -32, -18, -25, -19, 81, -44, 109, 41, -82, 107, 39, -121,
+            88, 87, 97, 118, 51, 92, -40, -60, -35, -53, -37, -27, 51, 84, 127, -58, 13, -65, -112};
+
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
-    private static final SecretKey SECRET_KEY = MacProvider.generateKey(SIGNATURE_ALGORITHM);
+    //private static final SecretKey SECRET_KEY = MacProvider.generateKey(SIGNATURE_ALGORITHM);
+    private static final SecretKey SECRET_KEY = new SecretKeySpec(ENCODED, "SecretKeySpec");
+    /*
+    private static final SecretKey SECRET_KEY = new SecretKey() {
+        @Override
+        public String getAlgorithm() {
+            return "HmacSHA256";
+        }
+
+        @Override
+        public String getFormat() {
+            return "RAW";
+        }
+
+        @Override
+        public byte[] getEncoded() {
+            return ENCODED;
+        }
+    }
+    */
     private static final TemporalAmount TOKEN_VALIDITY = Duration.ofHours(4L);
 
     public static final String AUTH_HEADER_KEY = "Authorization";
