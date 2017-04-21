@@ -57,9 +57,9 @@ public class JwtManager {
      * Builds a JWT with the given subject and role and returns it as a JWS signed compact String.
      */
     public String createToken(final String subject, final String role) {
-        System.out.println("********************** createToken(subject=" + subject + ", role=" + role + ")");
-        System.out.println("********************** createToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
-                + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
+        //System.out.println("********************** createToken(subject=" + subject + ", role=" + role + ")");
+        //System.out.println("********************** createToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
+        //        + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
         final Instant now = Instant.now();
         final Date expiryDate = Date.from(now.plus(TOKEN_VALIDITY));
         return Jwts.builder()
@@ -81,9 +81,9 @@ public class JwtManager {
             MalformedJwtException,
             SignatureException,
             IllegalArgumentException {
-        System.out.println("********************** parseToken(compactToken=" + compactToken + ")");
-        System.out.println("********************** parseToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
-                + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
+        //System.out.println("********************** parseToken(compactToken=" + compactToken + ")");
+        //System.out.println("********************** parseToken - SecretKey=" + SECRET_KEY + " -> " + SECRET_KEY.getAlgorithm()
+        //        + " : " + SECRET_KEY.getFormat() + " : " + SECRET_KEY.getEncoded());
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(compactToken);
