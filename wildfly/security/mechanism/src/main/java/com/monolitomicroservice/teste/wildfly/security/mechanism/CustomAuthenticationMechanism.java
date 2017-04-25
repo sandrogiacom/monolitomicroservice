@@ -13,18 +13,23 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
 
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange httpServerExchange, SecurityContext securityContext) {
+        LOG.finest("&&&&&&&&&& authenticate - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+
         /*
-        LOG.info("&&&&&&&&&& authenticate - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+        if (!securityContext.isAuthenticationRequired()) {
+            return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+        }
 
         ServletRequestContext servletRequestContext = httpServerExchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);
-
         HttpServletRequest request = servletRequestContext.getOriginalRequest();
-        LOG.info("&&&&&&&&&& authenticate - request=" + request);
+        HttpServletResponse response = servletRequestContext.getOriginalResponse();
 
         Principal principal = request.getUserPrincipal();
         LOG.info("&&&&&&&&&& authenticate - principal=" + principal);
 
-        HttpServletResponse response = servletRequestContext.getOriginalResponse();
+        if (principal != null && principal.getName() != null) {
+            return AuthenticationMechanismOutcome.AUTHENTICATED;
+        }
 
         String token = JwtManager.getBearerToken(request);
         LOG.info("&&&&&&&&&& authenticate - token=" + token);
@@ -32,38 +37,40 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
         String username = request.getParameter("j_username");
         String password = request.getParameter("j_password");
         LOG.info("&&&&&&&&&& authenticate - username=" + username + ", password=" + password);
-        */
 
-        /*
         if (token != null) {
-            LOG.info("&&&&&&&&&& #### token authenticate - vai fazer login");
-            if (securityContext.login(token, token)) {
-                LOG.info("&&&&&&&&&& #### token authenticate - fez login");
-                response.setHeader(JwtManager.AUTH_HEADER_KEY, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
-                principal = request.getUserPrincipal();
-                LOG.info("&&&&&&&&&& #### token authenticate - principal=" + principal);
-                return AuthenticationMechanismOutcome.AUTHENTICATED;
+            LOG.info("&&&&&&&&&& authenticate - vai logar via JWT");
+            Account acc = securityContext.getIdentityManager().verify(token,
+                    new PasswordCredential(token.toCharArray()));
+            LOG.info("&&&&&&&&&& authenticate - acc=" + acc);
+
+            if (acc == null) {
+                securityContext.authenticationFailed("invalid token", "CUSTOMAUTH");
+                servletRequestContext.getCurrentServletContext().getSession(httpServerExchange, true);
+                return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
             }
-            LOG.info("&&&&&&&&&& #### token authenticate - login FALHOU");
+
+            securityContext.authenticationComplete(acc, "CUSTOMAUTH", true);
+            response.setHeader(JwtManager.AUTH_HEADER_KEY, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
+            return AuthenticationMechanismOutcome.AUTHENTICATED;
         } else if (username != null) {
-            LOG.info("&&&&&&&&&& #### username authenticate - vai fazer login");
-            if (securityContext.login(username, password)) {
-                LOG.info("&&&&&&&&&& #### username authenticate - fez login");
-                principal = request.getUserPrincipal();
-                LOG.info("&&&&&&&&&& #### username authenticate - principal=" + principal);
+            LOG.info("&&&&&&&&&& authenticate - vai logar via Username/Password");
+            Account acc = securityContext.getIdentityManager().verify(username,
+                    new PasswordCredential(password.toCharArray()));
+            LOG.info("&&&&&&&&&& authenticate - acc=" + acc);
+
+            if (acc == null) {
+                securityContext.authenticationFailed("invalid token", "CUSTOMAUTH");
+                servletRequestContext.getCurrentServletContext().getSession(httpServerExchange, true);
+
                 token = (String)request.getAttribute("_jwt_token_");
                 LOG.info("&&&&&&&&&& #### username authenticate - token=" + token);
                 if (token != null) {
                     response.setHeader(JwtManager.AUTH_HEADER_KEY, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
                 }
-                return AuthenticationMechanismOutcome.AUTHENTICATED;
-            }
-        }
-        */
 
-        /*
-        if (principal != null && principal.getName() != null) {
-            return AuthenticationMechanismOutcome.AUTHENTICATED;
+                return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
+            }
         }
         */
 
@@ -72,6 +79,7 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
 
     @Override
     public ChallengeResult sendChallenge(HttpServerExchange httpServerExchange, SecurityContext securityContext) {
+        LOG.finest("@@@@@@@@@@@@@@@@@@@ sendChallenge - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
         return new ChallengeResult(true, HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

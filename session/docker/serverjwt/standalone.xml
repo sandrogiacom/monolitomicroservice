@@ -398,12 +398,16 @@
                             <module-option name="rolesQuery"
                                            value="SELECT role_code, 'Roles' FROM common_user_role WHERE login=?"/>
                             <module-option name="password-stacking" value="useFirstPass"/>
+                            <module-option name="principalClass"
+                                           value="com.monolitomicroservice.teste.wildfly.security.common.CustomPrincipal"/>
                         </login-module>
                         <login-module
                                 code="com.monolitomicroservice.teste.wildfly.security.loginmodule.jwt.CustomJwtLoginModule"
                                 module="com.teste.monolitomicroservice.security.loginmodule"
                                 flag="required">
                             <module-option name="password-stacking" value="useFirstPass"/>
+                            <module-option name="principalClass"
+                                           value="com.monolitomicroservice.teste.wildfly.security.common.CustomPrincipal"/>
                         </login-module>
                     </authentication>
                 </security-domain>

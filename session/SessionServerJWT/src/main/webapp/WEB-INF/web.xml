@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <distributable/>
 
     <filter>
         <filter-name>JWT</filter-name>
@@ -47,10 +46,11 @@
         </auth-constraint>
     </security-constraint>
     -->
+
     <security-constraint>
-        <display-name>Protected</display-name>
+        <display-name>Fake</display-name>
         <web-resource-collection>
-            <web-resource-name>Protected</web-resource-name>
+            <web-resource-name>Fake</web-resource-name>
             <description>Protected</description>
             <url-pattern>/_fake</url-pattern>
         </web-resource-collection>
@@ -61,7 +61,7 @@
     </security-constraint>
 
     <login-config>
-        <auth-method>FORM,CUSTOMAUTH</auth-method>
+        <auth-method>CUSTOMAUTH,FORM</auth-method>
         <realm-name>my-domain</realm-name>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
