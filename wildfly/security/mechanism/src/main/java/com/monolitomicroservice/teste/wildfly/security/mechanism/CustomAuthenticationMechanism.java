@@ -1,5 +1,7 @@
 package com.monolitomicroservice.teste.wildfly.security.mechanism;
 
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
@@ -7,13 +9,43 @@ import javax.servlet.http.HttpServletResponse;
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.api.SecurityContext;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.form.FormParserFactory;
 
 public class CustomAuthenticationMechanism implements AuthenticationMechanism {
     private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanism.class.getName());
+    protected static Level LEVEL = Level.FINEST;
+
+    private FormParserFactory formParserFactory;
+    private Map<String, String> properties;
+
+    public CustomAuthenticationMechanism(FormParserFactory formParserFactory, Map<String, String> properties) {
+        this.formParserFactory = formParserFactory;
+        this.properties = properties;
+    }
 
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange httpServerExchange, SecurityContext securityContext) {
-        LOG.finest("&&&&&&&&&& authenticate - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+        LOG.log(LEVEL, "&&&&&&&&&& authenticate - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+
+        /*
+        //Testes
+        final FormDataParser parser = formParserFactory.createParser(httpServerExchange);
+        LOG.info(":::::::::::: parser=" + parser);
+
+        if (parser != null) {
+            final FormData data;
+            try {
+                data = parser.parseBlocking();
+                LOG.info(":::::::::::: data=" + data);
+                final FormData.FormValue jUsername = data.getFirst("j_username");
+                LOG.info(":::::::::::: jUsername=" + jUsername.getValue());
+                final FormData.FormValue jPassword = data.getFirst("j_password");
+                LOG.info(":::::::::::: jPassword=" + jPassword.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+         */
 
         /*
         if (!securityContext.isAuthenticationRequired()) {
@@ -79,7 +111,7 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
 
     @Override
     public ChallengeResult sendChallenge(HttpServerExchange httpServerExchange, SecurityContext securityContext) {
-        LOG.finest("@@@@@@@@@@@@@@@@@@@ sendChallenge - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+        LOG.log(LEVEL, "@@@@@@@@@@@@@@@@@@@ sendChallenge - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
         return new ChallengeResult(true, HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
