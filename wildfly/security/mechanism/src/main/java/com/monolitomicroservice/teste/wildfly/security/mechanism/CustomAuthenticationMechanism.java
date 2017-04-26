@@ -1,15 +1,18 @@
 package com.monolitomicroservice.teste.wildfly.security.mechanism;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.api.SecurityContext;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.form.FormParserFactory;
+import io.undertow.servlet.handlers.ServletRequestContext;
 
 public class CustomAuthenticationMechanism implements AuthenticationMechanism {
     private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanism.class.getName());
@@ -25,10 +28,25 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
 
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange httpServerExchange, SecurityContext securityContext) {
-        LOG.log(LEVEL, "&&&&&&&&&& authenticate - isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
+        LOG.log(LEVEL, "authenticate(" + httpServerExchange + ", " + securityContext + "): isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
 
-        /*
+        if (!securityContext.isAuthenticationRequired()) {
+            return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+        }
+
+        ServletRequestContext servletRequestContext = httpServerExchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);
+        HttpServletRequest request = servletRequestContext.getOriginalRequest();
+        HttpServletResponse response = servletRequestContext.getOriginalResponse();
+
+        Principal principal = request.getUserPrincipal();
+        LOG.log(LEVEL, "authenticate - principal=" + principal);
+
+        if (principal != null && principal.getName() != null) {
+            return AuthenticationMechanismOutcome.AUTHENTICATED;
+        }
+
         //Testes
+        /*
         final FormDataParser parser = formParserFactory.createParser(httpServerExchange);
         LOG.info(":::::::::::: parser=" + parser);
 
@@ -45,24 +63,30 @@ public class CustomAuthenticationMechanism implements AuthenticationMechanism {
                 e.printStackTrace();
             }
         }
-         */
+        */
 
         /*
-        if (!securityContext.isAuthenticationRequired()) {
-            return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
-        }
+        String token = JwtManager.getBearerToken(request);
+        if (token != null) {
+            LOG.log(LEVEL, "&&&&&&&&&& authenticate - token=" + token);
+            LOG.log(LEVEL, "&&&&&&&&&& authenticate - vai logar via JWT");
+            Account acc = securityContext.getIdentityManager().verify(token,
+                    new PasswordCredential(token.toCharArray()));
+            LOG.log(LEVEL, "&&&&&&&&&& authenticate - acc=" + acc);
 
-        ServletRequestContext servletRequestContext = httpServerExchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);
-        HttpServletRequest request = servletRequestContext.getOriginalRequest();
-        HttpServletResponse response = servletRequestContext.getOriginalResponse();
+            if (acc == null) {
+                securityContext.authenticationFailed("invalid token", "CUSTOMAUTH");
+                servletRequestContext.getCurrentServletContext().getSession(httpServerExchange, true);
+                return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
+            }
 
-        Principal principal = request.getUserPrincipal();
-        LOG.info("&&&&&&&&&& authenticate - principal=" + principal);
-
-        if (principal != null && principal.getName() != null) {
+            securityContext.authenticationComplete(acc, "CUSTOMAUTH", true);
+            response.setHeader(JwtManager.AUTH_HEADER_KEY, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
             return AuthenticationMechanismOutcome.AUTHENTICATED;
         }
+        */
 
+        /*
         String token = JwtManager.getBearerToken(request);
         LOG.info("&&&&&&&&&& authenticate - token=" + token);
 
