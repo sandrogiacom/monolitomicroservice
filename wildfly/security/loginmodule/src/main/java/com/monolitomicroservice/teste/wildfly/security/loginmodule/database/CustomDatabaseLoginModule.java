@@ -112,11 +112,16 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
                         this.principal = username;
                         this.roles = new LinkedList<>();
 
+                        StringBuilder sbRoles = new StringBuilder();
                         try (PreparedStatement ps = conn.prepareStatement(rolesQuery)) {
                             ps.setString(1, username);
                             try (ResultSet rs = ps.executeQuery()) {
                                 while (rs.next()) {
-                                    this.roles.add(rs.getString(1));
+                                    String role = rs.getString(1);
+                                    this.roles.add(role);
+                                    if (sbRoles.length() > 0)
+                                        sbRoles.append(",");
+                                    sbRoles.append(role);
                                 }
                             }
                         }
@@ -126,6 +131,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
                         this.sharedState.put("javax.security.auth.login.name", username);
                         this.sharedState.put("javax.security.auth.login.password", password);
                         this.sharedState.put("_logged_", "true");
+                        this.sharedState.put("Roles", sbRoles.toString());
                     }
                 }
             } catch (NamingException | SQLException e) {
