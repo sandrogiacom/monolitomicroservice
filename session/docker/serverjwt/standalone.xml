@@ -467,6 +467,7 @@
                 <host name="default-host" alias="localhost">
                     <filter-ref name="server-header"/>
                     <filter-ref name="x-powered-by-header"/>
+                    <!-- filter-ref name="jwt-filter"/ -->
                 </host>
             </server>
             <servlet-container name="default">
@@ -479,6 +480,9 @@
             <filters>
                 <response-header name="server-header" header-name="Server" header-value="WildFly/10"/>
                 <response-header name="x-powered-by-header" header-name="X-Powered-By" header-value="Undertow/1"/>
+                <!-- filter name="jwt-filter"
+                        class-name="com.monolitomicroservice.teste.wildfly.security.loginmodule.CustomHttpHandler"
+                        module="com.teste.monolitomicroservice.security.loginmodule"/ -->
             </filters>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:2.0">
