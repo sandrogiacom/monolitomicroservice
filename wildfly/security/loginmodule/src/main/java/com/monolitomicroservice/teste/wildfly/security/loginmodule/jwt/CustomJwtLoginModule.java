@@ -48,9 +48,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                 LOG.log(LEVEL, "login - JWT provided - 1: jwt=" + jwt);
 
                 if (logged && jwt.equals(username)) {
-                    LOG.log(LEVEL, "login - JWT provided - 3.1: Ja logado, vai criar o token");
+                    LOG.log(LEVEL, "login - JWT provided - 3.1: Ja logado, vai criar o token -> Roles=" + this.sharedState.get("Roles"));
                     principal = username;
-                    String token = jwtManager.createToken(username, "user");
+                    String token = jwtManager.createToken(username, this.sharedState.get("Roles") != null ? (String) this.sharedState.get("Roles") : "user");
                     LOG.log(LEVEL, "login - JWT provided - 3.2: token=" + token);
                     LOG.log(LEVEL, "login - JWT provided - 3.3: subject=" + subject);
                     this.sharedState.put("_jwt_token_", token);
@@ -85,6 +85,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                     this.sharedState.put("javax.security.auth.login.name", username);
                     this.sharedState.put("javax.security.auth.login.password", username);
                     this.sharedState.put("_logged_", "true");
+                    if (request != null) {
+                        request.setAttribute("_jwt_token_", jwt);
+                    }
                 }
 
                 result = true;
