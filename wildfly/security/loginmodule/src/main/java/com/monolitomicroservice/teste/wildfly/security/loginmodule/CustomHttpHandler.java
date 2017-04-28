@@ -15,7 +15,7 @@ import io.undertow.servlet.handlers.ServletRequestContext;
 import io.undertow.servlet.spec.HttpServletRequestImpl;
 
 public class CustomHttpHandler implements HttpHandler {
-    protected static Level LEVEL = Level.INFO;
+    protected static Level LEVEL = Level.FINEST;
     private static final Logger LOG = Logger.getLogger(CustomHttpHandler.class.getSimpleName());
 
     private HttpHandler next;
@@ -45,8 +45,10 @@ public class CustomHttpHandler implements HttpHandler {
                 if (requestContext != null) {
                     HttpServletRequestImpl request = requestContext.getOriginalRequest();
                     String needLogout = (String) request.getAttribute(SecurityConstants.LOGOUT_REQUIRED_ATTRIBUTE);
+                    LOG.log(LEVEL, "exchangeEvent() - needLogout=" + needLogout);
                     if (needLogout != null && needLogout.equals(Boolean.TRUE.toString())) {
                         try {
+                            LOG.log(LEVEL, "exchangeEvent() - Efetuando logout");
                             request.logout();
                             HttpSession session = request.getSession(false);
                             if (session != null) {
