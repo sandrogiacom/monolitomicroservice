@@ -26,7 +26,7 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
     public static final String MECHANISM_NAME = "FORM";
 
     private static final Logger LOG = Logger.getLogger(FormCustomAuthenticationMechanism.class.getSimpleName());
-    protected static Level LEVEL = Level.INFO;
+    protected static Level LEVEL = Level.FINEST;
 
     public FormCustomAuthenticationMechanism(FormParserFactory formParserFactory, String name, String loginPage, String errorPage) {
         super(formParserFactory, name, loginPage, errorPage, FormAuthenticationMechanism.DEFAULT_POST_LOCATION);
@@ -38,34 +38,27 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
         LOG.log(LEVEL, "authenticate(" + exchange + ", " + securityContext + "): isAuthenticationRequired=" + securityContext.isAuthenticationRequired());
 
         ServletRequestContext servletRequestContext = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);
-        LOG.log(LEVEL, "authenticate - servletRequestContext=" + servletRequestContext);
-
         HttpServletRequest request = servletRequestContext.getOriginalRequest();
-        LOG.log(LEVEL, "authenticate - request=" + request);
 
         Principal principal = request.getUserPrincipal();
-        LOG.log(LEVEL, "authenticate - principal=" + principal);
+        LOG.log(LEVEL, "authenticate() - principal=" + principal);
         if (principal != null) {
             return AuthenticationMechanismOutcome.AUTHENTICATED;
         }
 
         HttpServletResponse response = servletRequestContext.getOriginalResponse();
-        LOG.log(LEVEL, "authenticate - response=" + response);
 
         request.setAttribute(HttpServerExchange.class.getName(), exchange);
-
         String token = JwtManager.getBearerToken(request);
         if (token != null) {
             // Autentica via token
-            LOG.log(LEVEL, "&&&&&&&&&& authenticate - token=" + token);
-            LOG.log(LEVEL, "&&&&&&&&&& authenticate - vai logar via JWT");
+            LOG.log(LEVEL, "authenticate() - token=" + token);
 
             AuthenticationMechanismOutcome outcome = null;
             PasswordCredential credential = new PasswordCredential(token.toCharArray());
             try {
                 IdentityManager identityManager = securityContext.getIdentityManager();
                 Account account = identityManager.verify(token, credential);
-                LOG.log(LEVEL, "&&&&&&&&&& authenticate - account=" + account);
                 if (account != null) {
                     securityContext.authenticationComplete(account, MECHANISM_NAME, true);
                     UndertowLogger.SECURITY_LOGGER.debugf("Authenticated user %s using for auth for %s", account.getPrincipal().getName(), exchange);
@@ -76,12 +69,12 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
                     outcome = AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
                 }
             } finally {
-                if (outcome == AuthenticationMechanismOutcome.AUTHENTICATED) {
+                //if (outcome == AuthenticationMechanismOutcome.AUTHENTICATED) {
                     //response.setHeader(JwtManager.AUTH_HEADER_KEY, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
                     //handleRedirectBack(exchange);
                     //exchange.endExchange();
-                }
-                LOG.log(LEVEL, "authenticate - result outcome = " + outcome);
+                //}
+                LOG.log(LEVEL, "authenticate() - result outcome = " + outcome);
                 request.removeAttribute(HttpServerExchange.class.getName());
                 return outcome != null ? outcome : AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
             }
@@ -89,7 +82,7 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
 
         if (!securityContext.isAuthenticationRequired()) {
             // Nao e' necessario autenticar
-            LOG.log(LEVEL, "authenticate - Autenticacao desnecessaria");
+            LOG.log(LEVEL, "authenticate() - Autenticacao desnecessaria");
             return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
         }
 
@@ -103,7 +96,7 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
             request.removeAttribute(HttpServerExchange.class.getName());
         }
 
-        LOG.log(LEVEL, "authenticate - result = " + result);
+        LOG.log(LEVEL, "authenticate() - result = " + result);
         return result;
     }
 
@@ -113,10 +106,9 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
 
         ServletRequestContext servletRequestContext = exchange.getAttachment(ServletRequestContext.ATTACHMENT_KEY);
         HttpServletRequest request = servletRequestContext.getOriginalRequest();
-        LOG.log(LEVEL, "authenticate - request=" + request);
-
         AuthenticationMechanismOutcome result = super.runFormAuth(exchange, securityContext);
-        LOG.log(LEVEL, "runFormAuth - result = " + result);
+
+        LOG.log(LEVEL, "runFormAuth() - result = " + result);
 
         return result;
     }
