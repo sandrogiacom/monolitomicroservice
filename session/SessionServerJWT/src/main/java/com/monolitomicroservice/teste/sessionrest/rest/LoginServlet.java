@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "login", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
-    private static final Logger LOG = Logger.getLogger(LoginServlet.class.getName());
+    private static final Logger LOG = Logger.getLogger(LoginServlet.class.getSimpleName());
     protected static final Level LEVEL = Level.FINEST;
 
     @Override
