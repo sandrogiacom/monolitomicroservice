@@ -40,7 +40,7 @@ public class UserRest {
     private static final Logger log = Logger.getLogger(UserRest.class.getName());
 
     static {
-        balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals("true");
+        balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals(Boolean.TRUE.toString());
 
         Properties clientProperties = new Properties();
         clientProperties
@@ -76,7 +76,7 @@ public class UserRest {
 
         long ini = System.currentTimeMillis();
 
-        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
+        UserService service = cached.equals(Boolean.TRUE.toString()) ? locateCachedEJB() : locateEJB();
 
         UserVO t = userCode != null ? new UserVO(userCode) : new UserVO();
         if (tenantId != null) {
@@ -127,7 +127,7 @@ public class UserRest {
         if (size <= 0)
             size = 50;
 
-        UserService service = cached.equals("true") ? locateCachedEJB() : locateEJB();
+        UserService service = cached.equals(Boolean.TRUE.toString()) ? locateCachedEJB() : locateEJB();
 
         CallResult l = service.find(start, size);
 
