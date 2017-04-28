@@ -11,7 +11,7 @@ import javax.security.auth.login.LoginException;
 import com.monolitomicroservice.teste.wildfly.security.loginmodule.AbstractLoginModule;
 
 public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule {
-    private static final Logger log = Logger.getLogger(CustomPasswordEqualsUsernameLoginModule.class.getName());
+    private static final Logger log = Logger.getLogger(CustomPasswordEqualsUsernameLoginModule.class.getSimpleName());
 
     private List<String> roles;
     private String principal;
