@@ -36,5 +36,12 @@
             <scope>provided</scope>
             <version>2.1.0.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.msc</groupId>
+            <artifactId>jboss-msc</artifactId>
+            <version>1.2.6.Final</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

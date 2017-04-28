@@ -24,6 +24,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 public class CustomJwtLoginModule extends AbstractLoginModule {
     private List<String> roles = new ArrayList<>();
@@ -47,6 +49,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                 request = (HttpServletRequest) PolicyContext.getContext("javax.servlet.http.HttpServletRequest");
                 LOG.log(LEVEL, "login - JWT provided - 1: jwt=" + jwt);
 
+                HttpServerExchange exchange = (HttpServerExchange) request.getAttribute(HttpServerExchange.class.getName());
+                LOG.log(LEVEL, "login - JWT provided - 2: exchange=" + exchange);
+
                 if (logged && jwt.equals(username)) {
                     LOG.log(LEVEL, "login - JWT provided - 3.1: Ja logado, vai criar o token -> Roles=" + this.sharedState.get("Roles"));
                     principal = username;
@@ -56,6 +61,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                     this.sharedState.put("_jwt_token_", token);
                     if (request != null) {
                         request.setAttribute("_jwt_token_", token);
+                    }
+                    if (exchange != null) {
+                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
                     }
                 } else {
                     // verify the received token
@@ -87,6 +95,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                     this.sharedState.put("_logged_", "true");
                     if (request != null) {
                         request.setAttribute("_jwt_token_", jwt);
+                    }
+                    if (exchange != null) {
+                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + jwt);
                     }
                 }
 

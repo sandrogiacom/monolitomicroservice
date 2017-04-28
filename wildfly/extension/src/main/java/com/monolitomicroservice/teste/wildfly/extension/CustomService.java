@@ -10,7 +10,8 @@ import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.extension.undertow.ServletContainerService;
 
-import com.monolitomicroservice.teste.wildfly.security.mechanism.CustomAuthenticationMechanismFactory;
+import com.monolitomicroservice.teste.wildfly.security.mechanism.FormCustomAuthenticationMechanism;
+import com.monolitomicroservice.teste.wildfly.security.mechanism.FormCustomAuthenticationMechanismFactory;
 
 import io.undertow.security.api.AuthenticationMechanismFactory;
 
@@ -22,7 +23,8 @@ public class CustomService implements Service<CustomService> {
         //Instala o "CustomAuth" no container
         Map<String, AuthenticationMechanismFactory> authMethods = servletContainer.getValue()
                 .getAuthenticationMechanisms();
-        authMethods.put("CUSTOMAUTH", CustomAuthenticationMechanismFactory.FACTORY);
+        //authMethods.put("CUSTOMAUTH", CustomAuthenticationMechanismFactory.FACTORY);
+        authMethods.put(FormCustomAuthenticationMechanism.MECHANISM_NAME, FormCustomAuthenticationMechanismFactory.FACTORY);
         //
     }
 

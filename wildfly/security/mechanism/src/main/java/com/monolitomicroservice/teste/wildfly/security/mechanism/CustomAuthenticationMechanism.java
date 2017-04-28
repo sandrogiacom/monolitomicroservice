@@ -15,7 +15,7 @@ import io.undertow.server.handlers.form.FormParserFactory;
 import io.undertow.servlet.handlers.ServletRequestContext;
 
 public class CustomAuthenticationMechanism implements AuthenticationMechanism {
-    private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanism.class.getName());
+    private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanism.class.getSimpleName());
     protected static Level LEVEL = Level.FINEST;
 
     private FormParserFactory formParserFactory;

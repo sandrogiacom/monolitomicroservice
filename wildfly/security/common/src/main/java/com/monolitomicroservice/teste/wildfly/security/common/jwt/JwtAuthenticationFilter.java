@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class JwtAuthenticationFilter implements Filter {
 
-    private static final java.util.logging.Logger LOG = Logger.getLogger(JwtAuthenticationFilter.class.getName());
+    private static final java.util.logging.Logger LOG = Logger.getLogger(JwtAuthenticationFilter.class.getSimpleName());
     private static final Level LEVEL = Level.FINEST;
 
     @Override
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter implements Filter {
             if (jwt != null && !jwt.isEmpty()) {
                 LOG.log(LEVEL, "################## " + jwt + " -- " + httpRequest);
                 httpRequest.setAttribute("com.teste.monolitomicroservice.extension.custom", "JWT");
-                httpRequest.login(jwt, jwt);
+                //httpRequest.login(jwt, jwt);
                 loggedIn = true;
                 LOG.log(LEVEL, "Logged in using JWT");
             } else {
