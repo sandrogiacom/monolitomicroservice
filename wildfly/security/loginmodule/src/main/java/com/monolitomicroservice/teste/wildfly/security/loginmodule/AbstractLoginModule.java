@@ -26,7 +26,7 @@ public abstract class AbstractLoginModule implements LoginModule {
     protected boolean committed = false;
 
     public AbstractLoginModule() {
-        LOG = Logger.getLogger(getClass().getName());
+        LOG = Logger.getLogger(getClass().getSimpleName());
     }
 
     @Override
