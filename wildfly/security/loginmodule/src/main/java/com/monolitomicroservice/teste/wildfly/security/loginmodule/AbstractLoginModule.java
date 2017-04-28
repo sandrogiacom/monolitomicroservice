@@ -13,6 +13,7 @@ import javax.security.auth.spi.LoginModule;
 
 import com.monolitomicroservice.teste.wildfly.security.common.CustomGroup;
 import com.monolitomicroservice.teste.wildfly.security.common.CustomPrincipal;
+import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 
 public abstract class AbstractLoginModule implements LoginModule {
     protected final Logger LOG;
@@ -31,63 +32,50 @@ public abstract class AbstractLoginModule implements LoginModule {
 
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
-        LOG.log(LEVEL, "BEGIN - initialize");
-        LOG.log(LEVEL, "initialize - subject=" + subject);
+        LOG.log(LEVEL, "initialize(subject=" + subject + ", callbackHandler=" + callbackHandler
+                + ", sharedState=" + sharedState + ", options=" + options + ")");
         this.callbackHandler = callbackHandler;
         this.subject = subject;
         this.options = options;
         this.sharedState = sharedState;
-        LOG.log(LEVEL, "END - initialize");
+        LOG.log(LEVEL, "initialize() - END");
     }
 
     @Override
     public boolean commit() throws LoginException {
-        LOG.log(LEVEL, "BEGIN - commit - authenticated=" + authenticated);
+        LOG.log(LEVEL, "commit() - BEGIN - authenticated=" + authenticated);
         if (!authenticated) {
-            if (this.sharedState.get("_logged_") == null) {
+            if (this.sharedState.get(SecurityConstants.LOGGED_ATTRIBUTE) == null) {
                 return false;
             }
         } else {
             List<String> l = getRoles();
-            LOG.log(LEVEL, "%%%%%% commit - 1 - roles: " + l);
 
             Principal principal = null;
             String identity = getIdentity();
-            LOG.log(LEVEL, "%%%%%% commit - 2 - identity: " + identity);
             for (Principal p : subject.getPrincipals()) {
-                LOG.log(LEVEL, "%%%%%% commit - 2.1 - principal: " + p);
                 if (p.getName().equals(identity)) {
                     principal = p;
                     break;
                 }
             }
-            LOG.log(LEVEL, "%%%%%% commit - 3 - principal: " + principal);
             if (principal == null) {
-                LOG.log(LEVEL, "commit - Criando Principal: " + identity);
                 principal = new CustomPrincipal(identity);
                 subject.getPrincipals().add(principal);
             }
-            LOG.log(LEVEL, "%%%%%% commit - 4 - subject: " + subject);
 
             CustomGroup roles = null;
             for (Principal p : subject.getPrincipals()) {
-                LOG.log(LEVEL, "%%%%%% commit - 4.1 - principal: " + p);
                 if (p.getName().equals("Roles")) {
                     roles = (CustomGroup) p;
                     break;
                 }
             }
-            LOG.log(LEVEL, "%%%%%% commit - 5 - roles: " + roles);
 
             if (roles == null) {
-                LOG.log(LEVEL, "commit - Criando grupo Roles");
                 roles = new CustomGroup("Roles");
                 subject.getPrincipals().add(roles);
-            } else {
-                LOG.log(LEVEL, "commit - Roles ja existe");
             }
-            LOG.log(LEVEL, "%%%%%% commit - 6 - subject: " + subject);
-            LOG.log(LEVEL, "%%%%%% commit - 7 - getRoles: " + getRoles());
 
             for (String r : getRoles()) {
                 CustomGroup role = new CustomGroup(r);
@@ -96,16 +84,16 @@ public abstract class AbstractLoginModule implements LoginModule {
                     roles.addMember(role);
                 }
             }
-            LOG.log(LEVEL, "%%%%%% commit - 8 - subject: " + subject);
+            LOG.log(LEVEL, "commit() - subject: " + subject);
             committed = true;
         }
-        LOG.log(LEVEL, "END - commit");
-        return true;
+        LOG.log(LEVEL, "commit() - END");
+        return committed;
     }
 
     @Override
     public boolean abort() throws LoginException {
-        LOG.log(LEVEL, "abort");
+        LOG.log(LEVEL, "abort()");
         authenticated = false;
         committed = false;
         return false;
@@ -113,7 +101,7 @@ public abstract class AbstractLoginModule implements LoginModule {
 
     @Override
     public boolean logout() throws LoginException {
-        LOG.log(LEVEL, "logout");
+        LOG.log(LEVEL, "logout()");
         authenticated = false;
         committed = false;
         return false;
