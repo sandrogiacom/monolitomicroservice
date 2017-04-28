@@ -22,6 +22,7 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 import com.monolitomicroservice.teste.wildfly.security.loginmodule.AbstractLoginModule;
 
 public class CustomDatabaseLoginModule extends AbstractLoginModule {
@@ -47,7 +48,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
 
     @Override
     public boolean login() throws LoginException {
-        LOG.log(LEVEL, "BEGIN - login");
+        LOG.log(LEVEL, "login() - BEGIN");
         boolean result = true;
         boolean executeLogin = true;
 
@@ -56,7 +57,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
             if (request != null) {
                 String loginType = (String) request.getAttribute("com.teste.monolitomicroservice.extension.custom");
                 if (loginType != null && loginType.equals("JWT")) {
-                    LOG.log(LEVEL, "::::::: logando via JWT");
+                    LOG.log(LEVEL, "login() - logando via JWT");
                     executeLogin = false;
                     result = false;
                 }
@@ -83,8 +84,8 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
             String username = ((NameCallback) callbacks[0]).getName();
             String password = new String(((PasswordCallback) callbacks[1]).getPassword());
 
-            LOG.log(LEVEL, "login - Username entered by user: " + username);
-            LOG.log(LEVEL, "login - Password entered by user: " + password.toString());
+            LOG.log(LEVEL, "login() - Username entered by user: " + username);
+            LOG.log(LEVEL, "login() - Password entered by user: " + password.toString());
 
             try {
                 DataSource ds = (DataSource) new InitialContext().lookup(dsJndiName);
@@ -93,10 +94,10 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
                         ps.setString(1, username);
                         try (ResultSet rs = ps.executeQuery()) {
                             if (rs.next()) {
-                                LOG.log(LEVEL, "login - Username exists: " + username);
+                                LOG.log(LEVEL, "login() - Username exists: " + username);
                                 String s = rs.getString(1);
                                 if (password.equals(s)) {
-                                    LOG.log(LEVEL, "login - Password OK");
+                                    LOG.log(LEVEL, "login() - Password OK");
                                 } else {
                                     result = false;
                                     throw new FailedLoginException("Invalid user: " + username);
@@ -108,7 +109,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
                         }
                     }
                     if (result) {
-                        LOG.log(LEVEL, "login - Credentials verified!!");
+                        LOG.log(LEVEL, "login() - Credentials verified!!");
                         this.principal = username;
                         this.roles = new LinkedList<>();
 
@@ -130,7 +131,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
                         this.sharedState.put("j_password", password);
                         this.sharedState.put("javax.security.auth.login.name", username);
                         this.sharedState.put("javax.security.auth.login.password", password);
-                        this.sharedState.put("_logged_", "true");
+                        this.sharedState.put(SecurityConstants.LOGGED_ATTRIBUTE, Boolean.TRUE.toString());
                         this.sharedState.put("Roles", sbRoles.toString());
                     }
                 }
@@ -142,7 +143,7 @@ public class CustomDatabaseLoginModule extends AbstractLoginModule {
         }
 
         authenticated = result;
-        LOG.log(LEVEL, "END - login - result=" + result);
+        LOG.log(LEVEL, "login() - END - result=" + result);
 
         return result;
     }
