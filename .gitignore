@@ -68,4 +68,3 @@ wildfly/security/loginmodule/MonoliToMicroserviceWildflySecurityLoginModule.iml
 wildfly/security/loginmodule/target/
 wildfly/security/mechanism/MonoliToMicroserviceWildflySecurityMechanism.iml
 wildfly/security/mechanism/target/
-
