@@ -33,7 +33,7 @@ import com.monolitomicroservice.teste.performance.common.UserVO;
 public class UserRest {
     private static final Logger log = Logger.getLogger(UserRest.class.getName());
 
-    private static final boolean balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals("true");
+    private static final boolean balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals(Boolean.TRUE.toString());
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

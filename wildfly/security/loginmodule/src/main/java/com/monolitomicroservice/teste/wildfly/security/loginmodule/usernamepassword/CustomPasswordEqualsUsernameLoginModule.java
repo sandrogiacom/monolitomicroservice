@@ -8,6 +8,7 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginException;
 
+import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 import com.monolitomicroservice.teste.wildfly.security.loginmodule.AbstractLoginModule;
 
 public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule {
@@ -18,7 +19,7 @@ public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule
 
     @Override
     public boolean login() throws LoginException {
-        log.info("BEGIN - login");
+        log.info("login() - BEGIN");
         boolean result = true;
 
         Callback nameCBack = new NameCallback("Username: ");
@@ -38,11 +39,11 @@ public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule
         String username = ((NameCallback) callbacks[0]).getName();
         String password = new String(((PasswordCallback) callbacks[1]).getPassword());
 
-        log.info("login - Username entered by user: " + username);
-        log.info("login - Password entered by user: " + password.toString());
+        log.info("login() - Username entered by user: " + username);
+        //log.info("login() - Password entered by user: " + password.toString());
 
         if (username.equals(password)) {
-            log.info("login - Credentials verified!!");
+            log.info("login() - Credentials verified!!");
 
             this.principal = username;
             this.roles.add("user");
@@ -53,11 +54,11 @@ public class CustomPasswordEqualsUsernameLoginModule extends AbstractLoginModule
             this.sharedState.put("j_password", password);
             this.sharedState.put("javax.security.auth.login.name", username);
             this.sharedState.put("javax.security.auth.login.password", password);
-            this.sharedState.put("_logged_", true);
+            this.sharedState.put(SecurityConstants.LOGGED_ATTRIBUTE, true);
         } else {
             result = false;
         }
-        log.info("END - login - result=" + result);
+        log.info("login() - END - result=" + result);
 
         return result;
     }

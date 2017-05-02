@@ -42,7 +42,7 @@ public class UserRest {
     private static JMSContext jmsContext;
 
     static {
-        balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals("true");
+        balanced = System.getenv("BALANCED") != null && System.getenv("BALANCED").equals(Boolean.TRUE.toString());
         properties.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
         properties.put(Context.PROVIDER_URL, "http-remoting://" + (balanced ? "performancehalb:8081" : "performanceserver:8080"));
     }
@@ -64,10 +64,10 @@ public class UserRest {
 
         long ini = System.currentTimeMillis();
 
-        Context context = getContext(cached.equals("true"));
+        Context context = getContext(cached.equals(Boolean.TRUE.toString()));
         ConnectionFactory factory = (ConnectionFactory) context.lookup("jms/RemoteConnectionFactory");
         Destination queue = (Destination) context.lookup("jms/queue/UserQueue");
-        JMSContext jmxCtx = getJmsContext(cached.equals("true"), factory);
+        JMSContext jmxCtx = getJmsContext(cached.equals(Boolean.TRUE.toString()), factory);
 
         try {
             JMSProducer producer = jmxCtx.createProducer();
@@ -113,7 +113,7 @@ public class UserRest {
 
             return r;
         } finally {
-            if (jmxCtx != null && !cached.equals("true")) {
+            if (jmxCtx != null && !cached.equals(Boolean.TRUE.toString())) {
                 jmxCtx.close();
             }
         }
@@ -126,10 +126,10 @@ public class UserRest {
             @QueryParam("cached") @DefaultValue("false") String cached) throws Exception {
         long ini = System.currentTimeMillis();
 
-        Context context = getContext(cached.equals("true"));
+        Context context = getContext(cached.equals(Boolean.TRUE.toString()));
         ConnectionFactory factory = (ConnectionFactory) context.lookup("jms/RemoteConnectionFactory");
         Destination queue = (Destination) context.lookup("jms/queue/UserQueue");
-        JMSContext jmxCtx = getJmsContext(cached.equals("true"), factory);
+        JMSContext jmxCtx = getJmsContext(cached.equals(Boolean.TRUE.toString()), factory);
 
         try {
             JMSProducer producer = jmxCtx.createProducer();
@@ -160,7 +160,7 @@ public class UserRest {
 
             return r;
         } finally {
-            if (jmxCtx != null && !cached.equals("true")) {
+            if (jmxCtx != null && !cached.equals(Boolean.TRUE.toString())) {
                 jmxCtx.close();
             }
         }

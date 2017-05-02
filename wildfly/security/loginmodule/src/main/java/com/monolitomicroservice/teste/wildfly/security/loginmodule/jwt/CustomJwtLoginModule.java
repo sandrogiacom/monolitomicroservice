@@ -15,6 +15,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.jacc.PolicyContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 import com.monolitomicroservice.teste.wildfly.security.common.jwt.JwtManager;
 import com.monolitomicroservice.teste.wildfly.security.loginmodule.AbstractLoginModule;
 
@@ -24,6 +25,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 public class CustomJwtLoginModule extends AbstractLoginModule {
     private List<String> roles = new ArrayList<>();
@@ -33,9 +36,9 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
 
     @Override
     public boolean login() throws LoginException {
-        LOG.log(LEVEL, "BEGIN - login");
-        boolean logged = this.sharedState.get("_logged_") != null && this.sharedState.get("_logged_").toString().equals("true");
-        LOG.log(LEVEL, "login - _logged_=" + logged);
+        LOG.log(LEVEL, "login() - BEGIN");
+        boolean logged = this.sharedState.get(SecurityConstants.LOGGED_ATTRIBUTE) != null && this.sharedState.get(SecurityConstants.LOGGED_ATTRIBUTE).toString().equals(Boolean.TRUE.toString());
+        LOG.log(LEVEL, "login() - logged=" + logged);
 
         HttpServletRequest request = null;
         String username = (String) this.sharedState.get("javax.security.auth.login.name");
@@ -43,50 +46,48 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
         String jwt = getJwt();
 
         if (jwt != null) {
+            LOG.log(LEVEL, "login() - JWT provided: jwt=" + jwt);
             try {
                 request = (HttpServletRequest) PolicyContext.getContext("javax.servlet.http.HttpServletRequest");
-                LOG.log(LEVEL, "login - JWT provided - 1: jwt=" + jwt);
+                HttpServerExchange exchange = (HttpServerExchange) request.getAttribute(HttpServerExchange.class.getName());
 
                 if (logged && jwt.equals(username)) {
-                    LOG.log(LEVEL, "login - JWT provided - 3.1: Ja logado, vai criar o token -> Roles=" + this.sharedState.get("Roles"));
+                    LOG.log(LEVEL, "login() - Ja logado, vai criar o token -> Roles=" + this.sharedState.get("Roles"));
                     principal = username;
                     String token = jwtManager.createToken(username, this.sharedState.get("Roles") != null ? (String) this.sharedState.get("Roles") : "user");
-                    LOG.log(LEVEL, "login - JWT provided - 3.2: token=" + token);
-                    LOG.log(LEVEL, "login - JWT provided - 3.3: subject=" + subject);
-                    this.sharedState.put("_jwt_token_", token);
+                    this.sharedState.put(SecurityConstants.JWT_ATTRIBUTE, token);
                     if (request != null) {
-                        request.setAttribute("_jwt_token_", token);
+                        request.setAttribute(SecurityConstants.JWT_ATTRIBUTE, token);
+                    }
+                    if (exchange != null) {
+                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
                     }
                 } else {
                     // verify the received token
                     Jws<Claims> jws = jwtManager.parseToken(jwt);
-                    LOG.log(LEVEL, "login - JWT provided - 4.1: " + jws);
+                    LOG.log(LEVEL, "login() - Logando via token: " + jws);
 
                     // now we can trust its information...
                     String user = jws.getBody().getSubject();
-                    LOG.log(LEVEL, "login - JWT provided - 4.2 - " + user);
                     principal = user;
-                    //identity = new CustomPrincipal(user);
-                    LOG.log(LEVEL, "login - JWT provided - 4.3 - " + principal);
 
                     String role = (String) jws.getBody().get("role");
-                    LOG.log(LEVEL, "login - JWT provided - 4.4 - " + role);
                     StringTokenizer st = new StringTokenizer(role, ",");
                     while (st.hasMoreTokens()) {
                         roles.add(st.nextToken());
                     }
-                    //group = new CustomPrincipal(role);
-                    LOG.log(LEVEL, "login - JWT provided - 4.5 - " + roles);
-
-                    LOG.log(LEVEL, "login - JWT is valid, logging in user " + user + " with role " + role);
 
                     this.sharedState.put("j_username", username);
                     this.sharedState.put("j_password", username);
                     this.sharedState.put("javax.security.auth.login.name", username);
                     this.sharedState.put("javax.security.auth.login.password", username);
-                    this.sharedState.put("_logged_", "true");
+                    this.sharedState.put(SecurityConstants.LOGGED_ATTRIBUTE, Boolean.TRUE.toString());
                     if (request != null) {
-                        request.setAttribute("_jwt_token_", jwt);
+                        request.setAttribute(SecurityConstants.JWT_ATTRIBUTE, jwt);
+                    }
+                    if (exchange != null) {
+                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + jwt);
+                        request.setAttribute(SecurityConstants.LOGOUT_REQUIRED_ATTRIBUTE, Boolean.TRUE.toString());
                     }
                 }
 
@@ -107,7 +108,7 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
             }
         }
         authenticated = result;
-        LOG.log(LEVEL, "END - login - result=" + result);
+        LOG.log(LEVEL, "login() - END - result=" + result);
 
         return result;
     }

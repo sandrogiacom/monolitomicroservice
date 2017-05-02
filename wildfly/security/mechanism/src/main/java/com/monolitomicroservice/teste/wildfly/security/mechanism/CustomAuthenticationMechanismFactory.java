@@ -10,7 +10,7 @@ import io.undertow.server.handlers.form.FormParserFactory;
 
 public class CustomAuthenticationMechanismFactory implements AuthenticationMechanismFactory {
     public static final CustomAuthenticationMechanismFactory FACTORY = new CustomAuthenticationMechanismFactory();
-    private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanismFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(CustomAuthenticationMechanismFactory.class.getSimpleName());
     protected static Level LEVEL = Level.FINEST;
 
     @Override
