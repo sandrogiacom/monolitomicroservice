@@ -17,7 +17,7 @@ import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 
 public abstract class AbstractLoginModule implements LoginModule {
     protected final Logger LOG;
-    protected static Level LEVEL = Level.INFO;
+    protected static Level LEVEL = Level.FINEST;
 
     protected CallbackHandler callbackHandler = null;
     protected boolean authenticated = false;

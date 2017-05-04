@@ -8,9 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 import com.monolitomicroservice.teste.wildfly.security.common.jwt.JwtManager;
 
 import io.undertow.UndertowLogger;
@@ -31,7 +29,7 @@ public class FormCustomAuthenticationMechanism extends ServletFormAuthentication
     public static final String MECHANISM_NAME = "FORM";
 
     private static final Logger LOG = Logger.getLogger(FormCustomAuthenticationMechanism.class.getSimpleName());
-    protected static Level LEVEL = Level.INFO;
+    protected static Level LEVEL = Level.FINEST;
 
     private FormParserFactory formParserFactory;
 
