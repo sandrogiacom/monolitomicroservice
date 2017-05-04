@@ -17,7 +17,7 @@ import com.monolitomicroservice.teste.wildfly.security.common.SecurityConstants;
 
 public abstract class AbstractLoginModule implements LoginModule {
     protected final Logger LOG;
-    protected static Level LEVEL = Level.FINEST;
+    protected static Level LEVEL = Level.INFO;
 
     protected CallbackHandler callbackHandler = null;
     protected boolean authenticated = false;
@@ -101,7 +101,7 @@ public abstract class AbstractLoginModule implements LoginModule {
 
     @Override
     public boolean logout() throws LoginException {
-        LOG.log(LEVEL, "logout()");
+        LOG.log(LEVEL, "logout() - " + subject);
         authenticated = false;
         committed = false;
         return false;

@@ -25,8 +25,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
 
 public class CustomJwtLoginModule extends AbstractLoginModule {
     private List<String> roles = new ArrayList<>();
@@ -49,19 +47,10 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
             LOG.log(LEVEL, "login() - JWT provided: jwt=" + jwt);
             try {
                 request = (HttpServletRequest) PolicyContext.getContext("javax.servlet.http.HttpServletRequest");
-                HttpServerExchange exchange = (HttpServerExchange) request.getAttribute(HttpServerExchange.class.getName());
 
                 if (logged && jwt.equals(username)) {
                     LOG.log(LEVEL, "login() - Ja logado, vai criar o token -> Roles=" + this.sharedState.get("Roles"));
                     principal = username;
-                    String token = jwtManager.createToken(username, this.sharedState.get("Roles") != null ? (String) this.sharedState.get("Roles") : "user");
-                    this.sharedState.put(SecurityConstants.JWT_ATTRIBUTE, token);
-                    if (request != null) {
-                        request.setAttribute(SecurityConstants.JWT_ATTRIBUTE, token);
-                    }
-                    if (exchange != null) {
-                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + token);
-                    }
                 } else {
                     // verify the received token
                     Jws<Claims> jws = jwtManager.parseToken(jwt);
@@ -82,13 +71,6 @@ public class CustomJwtLoginModule extends AbstractLoginModule {
                     this.sharedState.put("javax.security.auth.login.name", username);
                     this.sharedState.put("javax.security.auth.login.password", username);
                     this.sharedState.put(SecurityConstants.LOGGED_ATTRIBUTE, Boolean.TRUE.toString());
-                    if (request != null) {
-                        request.setAttribute(SecurityConstants.JWT_ATTRIBUTE, jwt);
-                    }
-                    if (exchange != null) {
-                        exchange.getResponseHeaders().add(Headers.AUTHORIZATION, JwtManager.AUTH_HEADER_VALUE_PREFIX + jwt);
-                        request.setAttribute(SecurityConstants.LOGOUT_REQUIRED_ATTRIBUTE, Boolean.TRUE.toString());
-                    }
                 }
 
                 result = true;
